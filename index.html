@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+  </head>
+  <body>
+    <main>
+      <div class="topUI">
+        <div class="healthBar__container">
+          <div id="playerHealth" class="healthBar"></div>
+        </div>
+        <div class="timer"></div>
+        <div id="enemy" class="healthBar__container">
+          <div id="enemyHealth" class="healthBar"></div>
+        </div>
+      </div>
+      <div id="verdict" class="center__text"></div>
+      <canvas id="app"></canvas>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
