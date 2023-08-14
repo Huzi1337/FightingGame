@@ -1,101 +1,55 @@
+import { Fighter, Game, Sprite } from "./classes";
 import "./style.scss";
+import { rectangularCollision } from "./utils";
 
 const canvas = document.getElementById("app") as HTMLCanvasElement;
 const c = canvas?.getContext("2d");
+canvas.width = 1280;
+canvas.height = 720;
 (c as CanvasRenderingContext2D).imageSmoothingEnabled = false;
 
 c?.fillRect(0, 0, canvas.width, canvas.height);
 
-const gravity = 0.2;
+const background = new Sprite({ x: 0, y: 0 }, ["/bg.png"]);
 
-type Coordinates = { x: number; y: number };
+const player = new Fighter(
+  { x: 0, y: 0 },
+  { x: 0, y: 0 },
+  {
+    x: 45,
+    y: 55,
+  },
+  {
+    idle: { imageSrc: "/king/Idle.png", maxFrames: 6 },
+    run: { imageSrc: "/king/Run.png", maxFrames: 8 },
+  },
+  1,
+  100
+);
 
-interface IFighterCollider {
-  width: number;
-  height: number;
-  position: Coordinates;
-  attackBox: {
-    position: Coordinates;
-    width: number;
-    height: number;
-  };
-}
+const enemy = new Fighter(
+  { x: 200, y: 0 },
+  { x: 0, y: 0 },
+  {
+    x: 0,
+    y: 55,
+  },
+  { idle: { imageSrc: "/king/Idle.png", maxFrames: 6 } },
+  1,
+  200
+);
 
-class Sprite implements IFighterCollider {
-  public height = 60;
-  public width = 30;
-  public lastKey = "";
-  public attackBox;
-  public isAttacking = false;
-  public health;
+const candle = new Sprite(
+  { x: canvas.width - 50, y: canvas.height - 100 },
+  Array.from({ length: 6 }, (_, i) => `/candle_1_${i + 1}.png`),
+  2,
+  200
+);
 
-  constructor(
-    public position: Coordinates,
-    public velocity: Coordinates,
-    public color: string = "red",
-    public offset: Coordinates
-  ) {
-    this.attackBox = {
-      position: {
-        x: this.position.x,
-        y: this.position.y,
-      },
-      offset,
-      width: 100,
-      height: 10,
-    };
-    this.health = 100;
-  }
+const verdict = document.querySelector("#verdict") as HTMLDivElement;
+const timer = document.querySelector(".timer") as HTMLDivElement;
 
-  draw() {
-    if (c != null) {
-      c.fillStyle = this.color;
-      c.fillRect(this.position.x, this.position.y, this.width, this.height);
-
-      //attackbox
-      if (this.isAttacking) {
-        c.fillStyle = "green";
-        c.fillRect(
-          this.attackBox.position.x,
-          this.attackBox.position.y,
-          this.attackBox.width,
-          this.attackBox.height
-        );
-      }
-    }
-  }
-
-  update() {
-    this.draw();
-    this.position.y += this.velocity.y;
-    this.position.x += this.velocity.x;
-    this.attackBox.position.x = this.position.x + this.attackBox.offset.x;
-    this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
-
-    if (this.position.y + this.height + this.velocity.y >= canvas.height) {
-      this.velocity.y = 0;
-    } else {
-      this.velocity.y += gravity;
-    }
-  }
-
-  attack() {
-    this.isAttacking = true;
-    setTimeout(() => {
-      this.isAttacking = false;
-    }, 100);
-  }
-}
-
-const player = new Sprite({ x: 0, y: 0 }, { x: 0, y: 0 }, "red", {
-  x: 0,
-  y: 0,
-});
-
-const enemy = new Sprite({ x: 200, y: 0 }, { x: 0, y: 0 }, "blue", {
-  x: -70,
-  y: 0,
-});
+const game = new Game(player, enemy, 60, verdict, timer);
 
 const keys = {
   a: {
@@ -118,48 +72,7 @@ const keys = {
   },
 };
 
-const RectangularCollision = (
-  rectangle1: IFighterCollider,
-  rectangle2: IFighterCollider
-) => {
-  return (
-    rectangle1.attackBox.position.x + rectangle1.attackBox.width >=
-      rectangle2.position.x &&
-    rectangle1.attackBox.position.x <
-      rectangle2.position.x + rectangle2.width &&
-    rectangle1.attackBox.position.y + rectangle1.attackBox.height >=
-      rectangle2.position.y &&
-    rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height
-  );
-};
-
-const determineWinner = (
-  player1: Sprite,
-  player2: Sprite,
-  element: HTMLDivElement
-) => {
-  element.style.display = "flex";
-  if (player1.health === player2.health) element.innerHTML = "draw";
-  else if (player1.health > player2.health) element.innerHTML = "Player 1 wins";
-  else element.innerHTML = "Player 2 wins";
-};
-
-let timer = 10;
-let gameOver = false;
-const decreaseTimer = () => {
-  if (timer > 0 && !gameOver) {
-    setTimeout(decreaseTimer, 1000);
-    timer--;
-    (document.querySelector(".timer") as HTMLDivElement).innerHTML = `${timer}`;
-  }
-
-  if (timer === 0) {
-    gameOver = true;
-    const verdict = document.querySelector("#verdict") as HTMLDivElement;
-    determineWinner(player, enemy, verdict);
-  }
-};
-decreaseTimer();
+game.decreaseTimer();
 
 const animate = () => {
   window.requestAnimationFrame(animate);
@@ -167,42 +80,50 @@ const animate = () => {
     c.fillStyle = "black";
     c.fillRect(0, 0, canvas.width, canvas.height);
   }
+  background.update();
+  candle.update();
   player.update();
   enemy.update();
 
-  if (keys.d.pressed && player.lastKey === "d") player.velocity.x = 1;
-  else if (keys.a.pressed && player.lastKey === "a") player.velocity.x = -1;
-  else player.velocity.x = 0;
+  if (!game.getGameOver()) {
+    if (keys.d.pressed && player.lastKey === "d") {
+      player.setState("run");
+      player.velocity.x = 1;
+    } else if (keys.a.pressed && player.lastKey === "a") {
+      player.setState("run");
+      player.velocity.x = -1;
+    } else {
+      player.setState("idle");
+      player.velocity.x = 0;
+    }
+    if (keys.right.pressed && enemy.lastKey === "ArrowRight")
+      enemy.velocity.x = 1;
+    else if (keys.left.pressed && enemy.lastKey === "ArrowLeft")
+      enemy.velocity.x = -1;
+    else enemy.velocity.x = 0;
 
-  if (keys.right.pressed && enemy.lastKey === "ArrowRight")
-    enemy.velocity.x = 1;
-  else if (keys.left.pressed && enemy.lastKey === "ArrowLeft")
-    enemy.velocity.x = -1;
-  else enemy.velocity.x = 0;
+    if (player.isAttacking && rectangularCollision(player, enemy)) {
+      player.isAttacking = false;
+      enemy.health -= 20;
+      (
+        document.querySelector("#enemyHealth") as HTMLDivElement
+      ).style.width = `${enemy.health}%`;
+    }
 
-  if (player.isAttacking && RectangularCollision(player, enemy)) {
-    console.log("kpow");
-    player.isAttacking = false;
-    enemy.health -= 20;
-    (
-      document.querySelector("#enemyHealth") as HTMLDivElement
-    ).style.width = `${enemy.health}%`;
-  }
+    if (enemy.isAttacking && rectangularCollision(enemy, player)) {
+      enemy.isAttacking = false;
+      player.health -= 20;
 
-  if (enemy.isAttacking && RectangularCollision(enemy, player)) {
-    console.log("enemy kpow");
-    enemy.isAttacking = false;
-    player.health -= 20;
-
-    (
-      document.querySelector("#playerHealth") as HTMLDivElement
-    ).style.width = `${player.health}%`;
-  }
-  if (player.health <= 0 || enemy.health <= 0) {
-    gameOver = true;
-    const verdict = document.querySelector("#verdict") as HTMLDivElement;
-
-    determineWinner(player, enemy, verdict);
+      (
+        document.querySelector("#playerHealth") as HTMLDivElement
+      ).style.width = `${player.health}%`;
+    }
+    if (player.health <= 0 || enemy.health <= 0) {
+      game.endGame();
+    }
+  } else {
+    player.velocity.x = 0;
+    enemy.velocity.x = 0;
   }
 };
 animate();
