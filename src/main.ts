@@ -1,5 +1,7 @@
 import { Fighter, Game, Sprite } from "./classes";
+import { PlayerControl } from "./classes/PlayerControl";
 import "./style.scss";
+import { Keybinds } from "./types";
 import { rectangularCollision } from "./utils";
 
 const canvas = document.getElementById("app") as HTMLCanvasElement;
@@ -16,14 +18,16 @@ const player = new Fighter(
   { x: 0, y: 0 },
   { x: 0, y: 0 },
   {
-    x: 45,
-    y: 55,
+    x: 90,
+    y: 170,
   },
   {
     idle: { imageSrc: "/king/Idle.png", maxFrames: 6 },
     run: { imageSrc: "/king/Run.png", maxFrames: 8 },
+    attack1: { imageSrc: "/king/Attack_1.png", maxFrames: 6 },
+    jump: { imageSrc: "/king/Jump.png", maxFrames: 2 },
   },
-  1,
+  2,
   100
 );
 
@@ -31,12 +35,17 @@ const enemy = new Fighter(
   { x: 200, y: 0 },
   { x: 0, y: 0 },
   {
-    x: 0,
-    y: 55,
+    x: 90,
+    y: 170,
   },
-  { idle: { imageSrc: "/king/Idle.png", maxFrames: 6 } },
-  1,
-  200
+  {
+    idle: { imageSrc: "/king/Idle.png", maxFrames: 6 },
+    run: { imageSrc: "/king/Run.png", maxFrames: 8 },
+    attack1: { imageSrc: "/king/Attack_1.png", maxFrames: 6 },
+    jump: { imageSrc: "/king/Jump.png", maxFrames: 2 },
+  },
+  2,
+  100
 );
 
 const candle = new Sprite(
@@ -45,6 +54,16 @@ const candle = new Sprite(
   2,
   200
 );
+
+const PLAYER1_KEYBINDS: Keybinds = {
+  left: "KeyA",
+  right: "KeyD",
+  jump: "KeyW",
+  attack1: "Space",
+  attack2: "ShiftLeft",
+};
+
+const player1control = new PlayerControl(player, PLAYER1_KEYBINDS);
 
 const verdict = document.querySelector("#verdict") as HTMLDivElement;
 const timer = document.querySelector(".timer") as HTMLDivElement;
@@ -87,32 +106,25 @@ const animate = () => {
 
   if (!game.getGameOver()) {
     if (keys.d.pressed && player.lastKey === "d") {
-      player.setState("run");
-      player.velocity.x = 1;
+      player.run(1);
     } else if (keys.a.pressed && player.lastKey === "a") {
-      player.setState("run");
-      player.velocity.x = -1;
+      player.run(-1);
     } else {
-      player.setState("idle");
-      player.velocity.x = 0;
+      player.idle();
     }
-    if (keys.right.pressed && enemy.lastKey === "ArrowRight")
-      enemy.velocity.x = 1;
-    else if (keys.left.pressed && enemy.lastKey === "ArrowLeft")
-      enemy.velocity.x = -1;
-    else enemy.velocity.x = 0;
+    if (keys.right.pressed && enemy.lastKey === "ArrowRight") enemy.run(1);
+    else if (keys.left.pressed && enemy.lastKey === "ArrowLeft") enemy.run(-1);
+    else enemy.idle();
 
     if (player.isAttacking && rectangularCollision(player, enemy)) {
-      player.isAttacking = false;
-      enemy.health -= 20;
+      enemy.damaged(20);
       (
         document.querySelector("#enemyHealth") as HTMLDivElement
       ).style.width = `${enemy.health}%`;
     }
 
     if (enemy.isAttacking && rectangularCollision(enemy, player)) {
-      enemy.isAttacking = false;
-      player.health -= 20;
+      player.damaged(20);
 
       (
         document.querySelector("#playerHealth") as HTMLDivElement
@@ -151,7 +163,7 @@ window.addEventListener("keyup", (event) => {
   }
 });
 window.addEventListener("keydown", (event) => {
-  console.log(event.key);
+  console.log(event);
   switch (event.key) {
     case "a":
       keys.a.pressed = true;
@@ -164,11 +176,11 @@ window.addEventListener("keydown", (event) => {
       break;
     case "w":
       keys.w.pressed = true;
-      player.velocity.y = -5;
+      player.jump();
       break;
 
     case " ":
-      player.attack();
+      player.attack1();
       break;
 
     //enemy
@@ -182,11 +194,11 @@ window.addEventListener("keydown", (event) => {
       break;
     case "ArrowUp":
       keys.up.pressed = true;
-      enemy.velocity.y = -5;
+      enemy.jump();
 
       break;
     case "ArrowDown":
-      enemy.attack();
+      enemy.attack1();
       break;
   }
 });
