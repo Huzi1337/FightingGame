@@ -24,11 +24,17 @@ export class PlayerControl {
     window.addEventListener("keydown", (event) =>
       this.readKeyDownInput(event.code)
     );
+    window.addEventListener("keyup", (event) =>
+      this.readKeyUpInput(event.code)
+    );
   }
 
   destroy() {
     window.removeEventListener("keydown", (event) =>
       this.readKeyDownInput(event.code)
+    );
+    window.removeEventListener("keyup", (event) =>
+      this.readKeyUpInput(event.code)
     );
   }
 

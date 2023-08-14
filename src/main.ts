@@ -63,33 +63,21 @@ const PLAYER1_KEYBINDS: Keybinds = {
   attack2: "ShiftLeft",
 };
 
+const PLAYER2_KEYBINDS: Keybinds = {
+  left: "ArrowLeft",
+  right: "ArrowRight",
+  jump: "ArrowUp",
+  attack1: "ArrowDown",
+  attack2: "ControlRight",
+};
+
 const player1control = new PlayerControl(player, PLAYER1_KEYBINDS);
+const player2control = new PlayerControl(enemy, PLAYER2_KEYBINDS);
 
 const verdict = document.querySelector("#verdict") as HTMLDivElement;
 const timer = document.querySelector(".timer") as HTMLDivElement;
 
 const game = new Game(player, enemy, 60, verdict, timer);
-
-const keys = {
-  a: {
-    pressed: false,
-  },
-  d: {
-    pressed: false,
-  },
-  w: {
-    pressed: false,
-  },
-  left: {
-    pressed: false,
-  },
-  right: {
-    pressed: false,
-  },
-  up: {
-    pressed: false,
-  },
-};
 
 game.decreaseTimer();
 
@@ -105,17 +93,6 @@ const animate = () => {
   enemy.update();
 
   if (!game.getGameOver()) {
-    if (keys.d.pressed && player.lastKey === "d") {
-      player.run(1);
-    } else if (keys.a.pressed && player.lastKey === "a") {
-      player.run(-1);
-    } else {
-      player.idle();
-    }
-    if (keys.right.pressed && enemy.lastKey === "ArrowRight") enemy.run(1);
-    else if (keys.left.pressed && enemy.lastKey === "ArrowLeft") enemy.run(-1);
-    else enemy.idle();
-
     if (player.isAttacking && rectangularCollision(player, enemy)) {
       enemy.damaged(20);
       (
@@ -139,66 +116,3 @@ const animate = () => {
   }
 };
 animate();
-
-window.addEventListener("keyup", (event) => {
-  switch (event.key) {
-    case "a":
-      keys.a.pressed = false;
-      break;
-    case "d":
-      keys.d.pressed = false;
-      break;
-    case "w":
-      keys.w.pressed = false;
-      break;
-    case "ArrowLeft":
-      keys.left.pressed = false;
-      break;
-    case "ArrowRight":
-      keys.right.pressed = false;
-      break;
-    case "ArrowUp":
-      keys.up.pressed = false;
-      break;
-  }
-});
-window.addEventListener("keydown", (event) => {
-  console.log(event);
-  switch (event.key) {
-    case "a":
-      keys.a.pressed = true;
-      player.lastKey = "a";
-      break;
-    case "d":
-      keys.d.pressed = true;
-      player.lastKey = "d";
-
-      break;
-    case "w":
-      keys.w.pressed = true;
-      player.jump();
-      break;
-
-    case " ":
-      player.attack1();
-      break;
-
-    //enemy
-    case "ArrowLeft":
-      keys.left.pressed = true;
-      enemy.lastKey = "ArrowLeft";
-      break;
-    case "ArrowRight":
-      keys.right.pressed = true;
-      enemy.lastKey = "ArrowRight";
-      break;
-    case "ArrowUp":
-      keys.up.pressed = true;
-      enemy.jump();
-
-      break;
-    case "ArrowDown":
-      enemy.attack1();
-      break;
-  }
-});
