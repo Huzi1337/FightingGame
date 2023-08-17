@@ -15,6 +15,7 @@ export interface IFighterCollider {
     width: number;
     height: number;
   };
+  getDirection(): number;
 }
 
 export class Game {
@@ -140,7 +141,7 @@ export class Fighter implements IFighterCollider, IFighterActions {
   private isInvulnerable = false;
   private isDuringAnimation = false;
   public height = 150;
-  public width = 30;
+  public width = 80;
 
   private direction = 1;
   public lastKey = "";
@@ -167,7 +168,7 @@ export class Fighter implements IFighterCollider, IFighterActions {
         y: this.position.y,
       },
       offset,
-      width: 200,
+      width: 180,
       height: 10,
     };
     this.health = 100;
@@ -185,6 +186,10 @@ export class Fighter implements IFighterCollider, IFighterActions {
       this.currentFrame = 0;
       this.animate();
     }
+  }
+
+  getDirection() {
+    return this.direction;
   }
 
   damaged(damage: number) {
@@ -216,7 +221,7 @@ export class Fighter implements IFighterCollider, IFighterActions {
     if (c != null) {
       const animation = this.animations[this.state] as SpriteAnimation;
       const frameWidth = this.image.width / animation.maxFrames;
-      const frameX = this.currentFrame * frameWidth;
+      const displayedFrame = this.currentFrame * frameWidth;
 
       c.fillRect(
         this.attackBox.position.x,
@@ -225,20 +230,20 @@ export class Fighter implements IFighterCollider, IFighterActions {
         this.attackBox.height
       );
 
-      c.save();
       c.fillStyle = "red";
       c.fillRect(this.position.x, this.position.y, this.width, this.height);
 
       c.save();
       c.scale(this.direction, 1);
-
       c.drawImage(
         this.image,
-        frameX,
+        displayedFrame,
         0,
         frameWidth,
         this.image.height,
-        this.position.x * this.direction - this.offset.x,
+        (this.position.x + (this.direction < 0 ? this.width : 0)) *
+          this.direction -
+          this.offset.x,
         this.position.y - this.offset.y,
         frameWidth * this.scale,
         this.image.height * this.scale
@@ -250,7 +255,9 @@ export class Fighter implements IFighterCollider, IFighterActions {
 
   run(direction: 1 | -1) {
     if (!this.isAttacking) {
-      if (this.direction != direction) this.direction = direction;
+      if (this.direction != direction) {
+        this.direction = direction;
+      }
       this.setState("run");
       this.velocity.x = this.moveSpeed * direction;
     }
@@ -301,6 +308,7 @@ export class Fighter implements IFighterCollider, IFighterActions {
       this.isAttacking = true;
       setTimeout(() => {
         this.isAttacking = false;
+        this.stop();
       }, (this.animations.attack1 as SpriteAnimation).maxFrames * this.animationSpeed);
     }
   }

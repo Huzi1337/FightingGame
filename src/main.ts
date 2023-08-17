@@ -19,7 +19,7 @@ const player = new Fighter(
   { x: 0, y: 0 },
   {
     x: 90,
-    y: 170,
+    y: 100,
   },
   {
     idle: { imageSrc: "/king/Idle.png", maxFrames: 6 },
