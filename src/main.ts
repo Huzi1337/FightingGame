@@ -1,9 +1,9 @@
+import { king, king2 } from "./characters";
 import { Fighter, Sprite } from "./classes";
 import Game from "./classes/Game";
 import { PlayerControl } from "./classes/PlayerControl";
 import "./style.scss";
 import { Keybinds } from "./types";
-import { rectangularCollision } from "./utils";
 
 const canvas = document.getElementById("app") as HTMLCanvasElement;
 const c = canvas?.getContext("2d");
@@ -22,12 +22,7 @@ const player = new Fighter(
     x: 90,
     y: 100,
   },
-  {
-    idle: { imageSrc: "/king/Idle.png", maxFrames: 6 },
-    run: { imageSrc: "/king/Run.png", maxFrames: 8 },
-    attack1: { imageSrc: "/king/Attack_1.png", maxFrames: 6 },
-    jump: { imageSrc: "/king/Jump.png", maxFrames: 2 },
-  },
+  king,
   2,
   100
 );
@@ -39,12 +34,7 @@ const enemy = new Fighter(
     x: 90,
     y: 170,
   },
-  {
-    idle: { imageSrc: "/king/Idle.png", maxFrames: 6 },
-    run: { imageSrc: "/king/Run.png", maxFrames: 8 },
-    attack1: { imageSrc: "/king/Attack_1.png", maxFrames: 6 },
-    jump: { imageSrc: "/king/Jump.png", maxFrames: 2 },
-  },
+  king2,
   2,
   100
 );

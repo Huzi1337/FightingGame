@@ -32,6 +32,7 @@ class Game {
   }
 
   resolvePlayer1Attack(data: any) {
+    console.log(this.player1.attackBox.width);
     if (rectangularCollision(this.player1, this.player2)) {
       this.player2.damaged(20);
       (

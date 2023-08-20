@@ -1,21 +1,22 @@
 import { Subject } from "rxjs";
 import { IFighterActions } from "./interfaces";
+import {
+  AttackBox,
+  Character,
+  Coordinates,
+  FighterState,
+  SpriteAnimation,
+} from "./types";
 
 const canvas = document.getElementById("app") as HTMLCanvasElement;
 const c = canvas?.getContext("2d");
 const gravity = 0.2;
 
-type Coordinates = { x: number; y: number };
-
 export interface IFighterCollider {
   width: number;
   height: number;
   position: Coordinates;
-  attackBox: {
-    position: Coordinates;
-    width: number;
-    height: number;
-  };
+  attackBox: AttackBox;
   getDirection(): number;
 }
 
@@ -82,14 +83,6 @@ export class Sprite {
   }
 }
 
-type FighterState = "idle" | "jump" | "run" | "attack1" | "fall";
-
-type SpriteAnimations = Partial<Record<FighterState, SpriteAnimation>>;
-
-type SpriteAnimation = {
-  imageSrc: string;
-  maxFrames: number;
-};
 export class Fighter implements IFighterCollider, IFighterActions {
   private moveSpeed = 4;
   private jumpSpeed = -5;
@@ -100,7 +93,7 @@ export class Fighter implements IFighterCollider, IFighterActions {
 
   private direction = 1;
   public lastKey = "";
-  public attackBox;
+  public attackBox: AttackBox;
   public isAttacking = false;
   public health;
   public image;
@@ -113,24 +106,16 @@ export class Fighter implements IFighterCollider, IFighterActions {
     public position: Coordinates,
     public velocity: Coordinates,
     public offset: Coordinates,
+    public character: Character,
 
-    public animations: SpriteAnimations,
     public scale = 1,
     public animationSpeed = 1000
   ) {
     this.attackEvent = new Subject<any>();
-    this.attackBox = {
-      position: {
-        x: this.position.x,
-        y: this.position.y,
-      },
-      offset,
-      width: 180,
-      height: 10,
-    };
+    this.attackBox = character.attackBoxes.attack1;
     this.health = 100;
     this.image = new Image();
-    this.image.src = (this.animations.idle as SpriteAnimation).imageSrc;
+    this.image.src = (this.character.actions.idle as SpriteAnimation).imageSrc;
 
     this.animate();
   }
@@ -138,7 +123,9 @@ export class Fighter implements IFighterCollider, IFighterActions {
   setState(state: FighterState) {
     if (this.state != state) {
       this.state = state;
-      this.image.src = (this.animations[state] as SpriteAnimation).imageSrc;
+      this.image.src = (
+        this.character.actions[state] as SpriteAnimation
+      ).imageSrc;
       clearTimeout(this.animationRef);
       this.currentFrame = 0;
       this.animate();
@@ -150,15 +137,7 @@ export class Fighter implements IFighterCollider, IFighterActions {
   }
 
   damaged(damage: number) {
-    if (!this.isInvulnerable) {
-      this.health -= damage;
-      this.isInvulnerable = true;
-      setTimeout(
-        () => (this.isInvulnerable = false),
-        (this.animations.attack1 as SpriteAnimation).maxFrames *
-          this.animationSpeed
-      );
-    }
+    this.health -= damage;
   }
 
   animate() {
@@ -168,7 +147,7 @@ export class Fighter implements IFighterCollider, IFighterActions {
     );
     if (
       this.currentFrame <
-      (this.animations[this.state] as SpriteAnimation).maxFrames - 1
+      (this.character.actions[this.state] as SpriteAnimation).maxFrames - 1
     )
       this.currentFrame++;
     else this.currentFrame = 0;
@@ -176,13 +155,13 @@ export class Fighter implements IFighterCollider, IFighterActions {
 
   draw() {
     if (c != null) {
-      const animation = this.animations[this.state] as SpriteAnimation;
+      const animation = this.character.actions[this.state] as SpriteAnimation;
       const frameWidth = this.image.width / animation.maxFrames;
       const displayedFrame = this.currentFrame * frameWidth;
 
       c.fillRect(
-        this.attackBox.position.x,
-        this.attackBox.position.y,
+        this.attackBox.position.x + this.attackBox.offset.x,
+        this.attackBox.position.y + this.attackBox.offset.y,
         this.attackBox.width,
         this.attackBox.height
       );
@@ -214,6 +193,10 @@ export class Fighter implements IFighterCollider, IFighterActions {
     if (!this.isAttacking) {
       if (this.direction != direction) {
         this.direction = direction;
+
+        this.attackBox.width *= -1;
+        if (this.attackBox.width > 0) this.attackBox.offset.x = this.width;
+        else this.attackBox.offset.x = 0;
       }
       this.setState("run");
       this.velocity.x = this.moveSpeed * direction;
@@ -267,7 +250,7 @@ export class Fighter implements IFighterCollider, IFighterActions {
       setTimeout(() => {
         this.isAttacking = false;
         this.stop();
-      }, (this.animations.attack1 as SpriteAnimation).maxFrames * this.animationSpeed);
+      }, (this.character.actions.attack1 as SpriteAnimation).maxFrames * this.animationSpeed);
     }
   }
   attack2() {
