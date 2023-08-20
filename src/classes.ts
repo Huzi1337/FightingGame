@@ -1,3 +1,4 @@
+import { Subject } from "rxjs";
 import { IFighterActions } from "./interfaces";
 
 const canvas = document.getElementById("app") as HTMLCanvasElement;
@@ -16,52 +17,6 @@ export interface IFighterCollider {
     height: number;
   };
   getDirection(): number;
-}
-
-export class Game {
-  private gameOver = false;
-  constructor(
-    private player1: Fighter,
-    private player2: Fighter,
-    private timer: number,
-    private verdict: HTMLDivElement,
-    private timerElement: HTMLDivElement
-  ) {}
-
-  reset() {
-    this.gameOver = true;
-  }
-
-  decreaseTimer() {
-    if (this.timer > 0 && !this.gameOver) {
-      setTimeout(this.decreaseTimer.bind(this), 1000);
-      this.timer--;
-      this.timerElement.innerHTML = `${this.timer}`;
-    }
-
-    if (this.timer === 0) {
-      this.endGame();
-    }
-  }
-
-  determineWinner() {
-    this.verdict.style.display = "flex";
-    if (this.player1.health === this.player2.health)
-      this.verdict.innerHTML = "draw";
-    else if (this.player1.health > this.player2.health)
-      this.verdict.innerHTML = "Player 1 wins";
-    else this.verdict.innerHTML = "Player 2 wins";
-  }
-
-  getGameOver() {
-    return this.gameOver;
-  }
-  endGame() {
-    this.gameOver = true;
-    this.determineWinner();
-  }
-
-  update() {}
 }
 
 export class Sprite {
@@ -152,6 +107,7 @@ export class Fighter implements IFighterCollider, IFighterActions {
   private animationRef = 0;
   public currentFrame = 0;
   private state: FighterState = "idle";
+  private attackEvent;
 
   constructor(
     public position: Coordinates,
@@ -162,6 +118,7 @@ export class Fighter implements IFighterCollider, IFighterActions {
     public scale = 1,
     public animationSpeed = 1000
   ) {
+    this.attackEvent = new Subject<any>();
     this.attackBox = {
       position: {
         x: this.position.x,
@@ -301,8 +258,9 @@ export class Fighter implements IFighterCollider, IFighterActions {
     }
   }
 
-  attack1() {
+  attack1(variant: any) {
     if (this.isAttacking === false) {
+      this.attackEvent.next(variant);
       this.setState("attack1");
       this.velocity.x = 0;
       this.isAttacking = true;
@@ -314,5 +272,9 @@ export class Fighter implements IFighterCollider, IFighterActions {
   }
   attack2() {
     console.log("Attack 2!");
+  }
+
+  get event$() {
+    return this.attackEvent.asObservable();
   }
 }

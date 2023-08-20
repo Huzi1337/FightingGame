@@ -52,7 +52,7 @@ export class PlayerControl {
         this.player.jump();
         break;
       case this.keybinds.attack1:
-        this.player.attack1();
+        this.player.attack1("boob");
         break;
       case this.keybinds.attack2:
         this.player.attack2();

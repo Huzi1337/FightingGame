@@ -1,4 +1,5 @@
-import { Fighter, Game, Sprite } from "./classes";
+import { Fighter, Sprite } from "./classes";
+import Game from "./classes/Game";
 import { PlayerControl } from "./classes/PlayerControl";
 import "./style.scss";
 import { Keybinds } from "./types";
@@ -71,8 +72,8 @@ const PLAYER2_KEYBINDS: Keybinds = {
   attack2: "ControlRight",
 };
 
-const player1control = new PlayerControl(player, PLAYER1_KEYBINDS);
-const player2control = new PlayerControl(enemy, PLAYER2_KEYBINDS);
+new PlayerControl(player, PLAYER1_KEYBINDS);
+new PlayerControl(enemy, PLAYER2_KEYBINDS);
 
 const verdict = document.querySelector("#verdict") as HTMLDivElement;
 const timer = document.querySelector(".timer") as HTMLDivElement;
@@ -91,28 +92,5 @@ const animate = () => {
   candle.update();
   player.update();
   enemy.update();
-
-  if (!game.getGameOver()) {
-    if (player.isAttacking && rectangularCollision(player, enemy)) {
-      enemy.damaged(20);
-      (
-        document.querySelector("#enemyHealth") as HTMLDivElement
-      ).style.width = `${enemy.health}%`;
-    }
-
-    if (enemy.isAttacking && rectangularCollision(enemy, player)) {
-      player.damaged(20);
-
-      (
-        document.querySelector("#playerHealth") as HTMLDivElement
-      ).style.width = `${player.health}%`;
-    }
-    if (player.health <= 0 || enemy.health <= 0) {
-      game.endGame();
-    }
-  } else {
-    player.velocity.x = 0;
-    enemy.velocity.x = 0;
-  }
 };
 animate();
