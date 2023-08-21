@@ -9,7 +9,7 @@ import {
   SpriteAnimation,
 } from "../types";
 import { IFighterCollider } from "../classes";
-import { IFighterActions } from "../interfaces";
+import { IAttackEvent, IFighterActions } from "../interfaces";
 
 class Fighter implements IFighterCollider, IFighterActions {
   private moveSpeed = 4;
@@ -22,13 +22,15 @@ class Fighter implements IFighterCollider, IFighterActions {
   private direction = 1;
   public lastKey = "";
   public attackBox: AttackBox;
-  public isAttacking = false;
   public health;
   public image;
   private animationRef = 0;
   public currentFrame = 0;
   private state: FighterState = "idle";
   private attackEvent;
+
+  private _isAttacking = false;
+  private _isBlocking = false;
 
   constructor(
     public position: Coordinates,
@@ -39,8 +41,10 @@ class Fighter implements IFighterCollider, IFighterActions {
     public scale = 1,
     public animationSpeed = 1000
   ) {
-    this.attackEvent = new Subject<any>();
-    this.attackBox = character.attackBoxes.attack1;
+    this.attackEvent = new Subject<IAttackEvent>();
+    this.attackBox = JSON.parse(
+      JSON.stringify(character.attacks.attack1.attackBox)
+    );
     this.health = 100;
     this.image = new Image();
     this.image.src = (this.character.actions.idle as SpriteAnimation).imageSrc;
@@ -117,7 +121,7 @@ class Fighter implements IFighterCollider, IFighterActions {
   }
 
   run(direction: 1 | -1) {
-    if (!this.isAttacking) {
+    if (!this._isAttacking) {
       if (this.direction != direction) {
         this.direction = direction;
 
@@ -136,19 +140,19 @@ class Fighter implements IFighterCollider, IFighterActions {
   }
 
   jump() {
-    if (!this.isAttacking && this.velocity.y === 0) {
+    if (!this._isAttacking && this.velocity.y === 0) {
       this.setState("jump");
       this.velocity.y = this.jumpSpeed;
     }
   }
   fall() {
-    if (!this.isAttacking) {
+    if (!this._isAttacking) {
       this.setState("fall");
     }
   }
 
   idle() {
-    if (!this.isAttacking) {
+    if (!this._isAttacking) {
       this.setState("idle");
     }
     this.velocity.x = 0;
@@ -169,29 +173,47 @@ class Fighter implements IFighterCollider, IFighterActions {
   }
 
   attack(variant: AttackVariant) {
-    if (this.isAttacking === false) {
-      this.isAttacking = true;
+    if (this._isAttacking === false) {
+      this._isAttacking = true;
       this.setState(variant);
+      console.log(this.character.attacks[variant].attackBox.width);
       this.attackBox = {
-        ...this.character.attackBoxes[variant],
-        width: this.character.attackBoxes[variant].width * this.direction,
+        ...this.character.attacks[variant].attackBox,
+        width: this.character.attacks[variant].attackBox.width * this.direction,
         position: {
           x: this.position.x,
           y: this.position.y,
         },
       };
-      this.attackEvent.next(variant);
+      this.attackEvent.next({ damage: this.character.attacks[variant].damage });
       this.velocity.x = 0;
 
-      const attackSpeed = (this.character.actions[variant] as SpriteAnimation)
-        .maxFrames;
+      const attackSpeed =
+        (this.character.actions[variant] as SpriteAnimation).maxFrames *
+        this.animationSpeed;
 
       setTimeout(() => {
         console.log("stopped attacking");
-        this.isAttacking = false;
+        this._isAttacking = false;
         this.stop();
-      }, attackSpeed * this.animationSpeed);
+      }, attackSpeed);
     }
+  }
+
+  block() {
+    this._isBlocking = true;
+  }
+
+  stopBlocking() {
+    this._isBlocking = false;
+  }
+
+  get isBlocking(): boolean {
+    return this._isBlocking;
+  }
+
+  get isAttacking(): boolean {
+    return this._isAttacking;
   }
 
   get event$() {
