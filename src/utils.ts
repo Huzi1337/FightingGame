@@ -11,9 +11,12 @@ export const rectangularCollision = (
     rectangle1.attackBox.offset.x;
   const attackInnerEdgeX =
     rectangle1.attackBox.position.x + rectangle1.attackBox.offset.x;
-  const attackTopEdge = rectangle1.attackBox.position.y;
+  const attackTopEdge =
+    rectangle1.attackBox.position.y + rectangle1.attackBox.offset.y;
   const attackBotEdge =
-    rectangle1.attackBox.position.y + rectangle1.attackBox.height;
+    rectangle1.attackBox.position.y +
+    rectangle1.attackBox.height +
+    rectangle1.attackBox.offset.y;
 
   const enemyLeftEdge = rectangle2.position.x;
   const enemyRightEdge = rectangle2.position.x + rectangle2.width;
@@ -25,10 +28,9 @@ export const rectangularCollision = (
   const faceRightXCheck =
     attackOuterEdgeX >= enemyLeftEdge && attackInnerEdgeX <= enemyRightEdge;
 
-  const value = isFacingRight
-    ? faceRightXCheck
-    : faceLeftXCheck &&
-      attackBotEdge >= enemyTopEdge &&
-      attackTopEdge <= enemyBotEdge;
+  const value =
+    (isFacingRight ? faceRightXCheck : faceLeftXCheck) &&
+    attackBotEdge >= enemyTopEdge &&
+    attackTopEdge <= enemyBotEdge;
   return value;
 };
