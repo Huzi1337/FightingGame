@@ -2,6 +2,7 @@ export type Keybinds = {
   left: string;
   right: string;
   jump: string;
+  block: string;
   attack1: string;
   attack2: string;
 };
@@ -30,10 +31,15 @@ export type AttackBox = {
 
 export type Character = {
   actions: SpriteAnimations;
-  attackBoxes: {
-    attack1: AttackBox;
-    attack2: AttackBox;
+  attacks: {
+    attack1: Attack;
+    attack2: Attack;
   };
+};
+
+export type Attack = {
+  damage: number;
+  attackBox: AttackBox;
 };
 
 export type SpriteAnimation = {

@@ -9,24 +9,30 @@ export const king: Character = {
 
     jump: { imageSrc: "/king/Jump.png", maxFrames: 2 },
   },
-  attackBoxes: {
+  attacks: {
     attack1: {
-      position: {
-        x: 0,
-        y: 0,
+      damage: 20,
+      attackBox: {
+        position: {
+          x: 0,
+          y: 0,
+        },
+        width: 100,
+        height: 100,
+        offset: { x: 0, y: 0 },
       },
-      width: 100,
-      height: 100,
-      offset: { x: 0, y: 0 },
     },
     attack2: {
-      position: {
-        x: 0,
-        y: 0,
+      damage: 10,
+      attackBox: {
+        position: {
+          x: 0,
+          y: 0,
+        },
+        width: 300,
+        height: 30,
+        offset: { x: 0, y: 70 },
       },
-      width: 300,
-      height: 30,
-      offset: { x: 0, y: 70 },
     },
   },
 };
@@ -40,24 +46,30 @@ export const king2: Character = {
 
     jump: { imageSrc: "/king/Jump.png", maxFrames: 2 },
   },
-  attackBoxes: {
+  attacks: {
     attack1: {
-      position: {
-        x: 0,
-        y: 0,
+      damage: 20,
+      attackBox: {
+        position: {
+          x: 0,
+          y: 0,
+        },
+        width: 100,
+        height: 100,
+        offset: { x: 0, y: 0 },
       },
-      width: 100,
-      height: 30,
-      offset: { x: 0, y: 0 },
     },
     attack2: {
-      position: {
-        x: 0,
-        y: 0,
+      damage: 10,
+      attackBox: {
+        position: {
+          x: 0,
+          y: 0,
+        },
+        width: 300,
+        height: 30,
+        offset: { x: 0, y: 70 },
       },
-      width: 100,
-      height: 30,
-      offset: { x: 0, y: 0 },
     },
   },
 };

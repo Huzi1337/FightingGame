@@ -1,6 +1,7 @@
 import { Subscription } from "rxjs";
 import { rectangularCollision } from "../utils";
 import Fighter from "./Fighter";
+import { IAttackEvent } from "../interfaces";
 
 class Game {
   private gameOver = false;
@@ -31,27 +32,32 @@ class Game {
     this.gameOver = true;
   }
 
-  resolvePlayer1Attack(data: any) {
+  resolvePlayer1Attack({ damage }: IAttackEvent) {
     if (rectangularCollision(this.player1, this.player2)) {
-      this.player2.damaged(5);
+      if (this.player1.isBlocking) {
+        this.player2.damaged(damage / 2);
+      } else this.player2.damaged(damage);
       (
         document.querySelector("#player2Health") as HTMLDivElement
       ).style.width = `${this.player2.health}%`;
       if (this.player2.health <= 0) this.endGame();
     }
 
-    console.log("attack resolved!", data);
+    console.log("Player 2 hp:", this.player2.health);
   }
 
-  resolvePlayer2Attack(data: any) {
+  resolvePlayer2Attack({ damage }: IAttackEvent) {
     if (rectangularCollision(this.player2, this.player1)) {
-      this.player1.damaged(5);
+      if (this.player1.isBlocking) {
+        this.player1.damaged(damage / 2);
+      } else this.player1.damaged(damage);
+
       (
         document.querySelector("#player1Health") as HTMLDivElement
       ).style.width = `${this.player1.health}%`;
       if (this.player1.health <= 0) this.endGame();
     }
-    console.log("attack resolved!", data);
+    console.log("Player 1 hp:", this.player1.health);
   }
 
   decreaseTimer() {

@@ -58,6 +58,9 @@ export class PlayerControl {
         this.player.attack("attack2");
 
         break;
+      case this.keybinds.block:
+        this.player.block();
+        break;
     }
   }
 
@@ -72,6 +75,9 @@ export class PlayerControl {
         this.keyStatus.right.pressed = false;
         if (!this.keyStatus.left.pressed && !this.keyStatus.right.pressed)
           this.player.stop();
+        break;
+      case this.keybinds.block:
+        this.player.stopBlocking();
         break;
     }
   }

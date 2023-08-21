@@ -50,6 +50,7 @@ const PLAYER1_KEYBINDS: Keybinds = {
   jump: "KeyW",
   attack1: "Space",
   attack2: "ShiftLeft",
+  block: "Semicolon",
 };
 
 const PLAYER2_KEYBINDS: Keybinds = {
@@ -58,6 +59,7 @@ const PLAYER2_KEYBINDS: Keybinds = {
   jump: "ArrowUp",
   attack1: "ArrowDown",
   attack2: "ControlRight",
+  block: "Numpad0",
 };
 
 new PlayerControl(player, PLAYER1_KEYBINDS);
