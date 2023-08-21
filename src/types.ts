@@ -8,7 +8,13 @@ export type Keybinds = {
 
 export type Coordinates = { x: number; y: number };
 
-export type FighterState = "idle" | "jump" | "run" | "attack1" | "fall";
+export type FighterState =
+  | "idle"
+  | "jump"
+  | "run"
+  | "attack1"
+  | "attack2"
+  | "fall";
 
 export type SpriteAnimations = Partial<Record<FighterState, SpriteAnimation>>;
 
@@ -34,3 +40,5 @@ export type SpriteAnimation = {
   imageSrc: string;
   maxFrames: number;
 };
+
+export type AttackVariant = "attack1" | "attack2";

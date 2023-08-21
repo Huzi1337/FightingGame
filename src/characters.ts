@@ -5,6 +5,8 @@ export const king: Character = {
     idle: { imageSrc: "/king/Idle.png", maxFrames: 6 },
     run: { imageSrc: "/king/Run.png", maxFrames: 8 },
     attack1: { imageSrc: "/king/Attack_1.png", maxFrames: 6 },
+    attack2: { imageSrc: "/king/Attack_2.png", maxFrames: 6 },
+
     jump: { imageSrc: "/king/Jump.png", maxFrames: 2 },
   },
   attackBoxes: {
@@ -14,7 +16,7 @@ export const king: Character = {
         y: 0,
       },
       width: 100,
-      height: 30,
+      height: 100,
       offset: { x: 0, y: 0 },
     },
     attack2: {
@@ -22,9 +24,9 @@ export const king: Character = {
         x: 0,
         y: 0,
       },
-      width: 100,
+      width: 300,
       height: 30,
-      offset: { x: 0, y: 0 },
+      offset: { x: 0, y: 70 },
     },
   },
 };
@@ -34,6 +36,8 @@ export const king2: Character = {
     idle: { imageSrc: "/king/Idle.png", maxFrames: 6 },
     run: { imageSrc: "/king/Run.png", maxFrames: 8 },
     attack1: { imageSrc: "/king/Attack_1.png", maxFrames: 6 },
+    attack2: { imageSrc: "/king/Attack_2.png", maxFrames: 6 },
+
     jump: { imageSrc: "/king/Jump.png", maxFrames: 2 },
   },
   attackBoxes: {

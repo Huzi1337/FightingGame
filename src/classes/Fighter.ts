@@ -2,6 +2,7 @@ import { Subject } from "rxjs";
 import { GRAVITY, canvas, c } from "../data";
 import {
   AttackBox,
+  AttackVariant,
   Character,
   Coordinates,
   FighterState,
@@ -12,7 +13,7 @@ import { IFighterActions } from "../interfaces";
 
 class Fighter implements IFighterCollider, IFighterActions {
   private moveSpeed = 4;
-  private jumpSpeed = -5;
+  private jumpSpeed = -7;
   // private isInvulnerable = false;
   // private isDuringAnimation = false;
   public height = 150;
@@ -167,20 +168,30 @@ class Fighter implements IFighterCollider, IFighterActions {
     }
   }
 
-  attack1(variant: any) {
+  attack(variant: AttackVariant) {
     if (this.isAttacking === false) {
-      this.attackEvent.next(variant);
-      this.setState("attack1");
-      this.velocity.x = 0;
       this.isAttacking = true;
+      this.setState(variant);
+      this.attackBox = {
+        ...this.character.attackBoxes[variant],
+        width: this.character.attackBoxes[variant].width * this.direction,
+        position: {
+          x: this.position.x,
+          y: this.position.y,
+        },
+      };
+      this.attackEvent.next(variant);
+      this.velocity.x = 0;
+
+      const attackSpeed = (this.character.actions[variant] as SpriteAnimation)
+        .maxFrames;
+
       setTimeout(() => {
+        console.log("stopped attacking");
         this.isAttacking = false;
         this.stop();
-      }, (this.character.actions.attack1 as SpriteAnimation).maxFrames * this.animationSpeed);
+      }, attackSpeed * this.animationSpeed);
     }
-  }
-  attack2() {
-    console.log("Attack 2!");
   }
 
   get event$() {
