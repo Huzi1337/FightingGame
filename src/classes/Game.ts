@@ -34,7 +34,7 @@ class Game {
   resolvePlayer1Attack(data: any) {
     console.log(this.player1.attackBox.width);
     if (rectangularCollision(this.player1, this.player2)) {
-      this.player2.damaged(20);
+      this.player2.damaged(5);
       (
         document.querySelector("#player2Health") as HTMLDivElement
       ).style.width = `${this.player2.health}%`;
@@ -46,7 +46,7 @@ class Game {
 
   resolvePlayer2Attack(data: any) {
     if (rectangularCollision(this.player2, this.player1)) {
-      this.player1.damaged(20);
+      this.player1.damaged(5);
       (
         document.querySelector("#player1Health") as HTMLDivElement
       ).style.width = `${this.player1.health}%`;

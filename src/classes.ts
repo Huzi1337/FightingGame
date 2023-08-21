@@ -119,7 +119,6 @@ export class Fighter implements IFighterCollider, IFighterActions {
 
     this.animate();
   }
-
   setState(state: FighterState) {
     if (this.state != state) {
       this.state = state;
