@@ -86,8 +86,8 @@ export class Sprite {
 export class Fighter implements IFighterCollider, IFighterActions {
   private moveSpeed = 4;
   private jumpSpeed = -5;
-  private isInvulnerable = false;
-  private isDuringAnimation = false;
+  // private isInvulnerable = false;
+  // private isDuringAnimation = false;
   public height = 150;
   public width = 80;
 
