@@ -1,14 +1,12 @@
 import { king, king2 } from "./characters";
-import { Fighter, Sprite } from "./classes";
+import { Sprite } from "./classes";
+import Fighter from "./classes/Fighter";
 import Game from "./classes/Game";
 import { PlayerControl } from "./classes/PlayerControl";
+import { c, canvas } from "./data";
 import "./style.scss";
 import { Keybinds } from "./types";
 
-const canvas = document.getElementById("app") as HTMLCanvasElement;
-const c = canvas?.getContext("2d");
-canvas.width = 1280;
-canvas.height = 720;
 (c as CanvasRenderingContext2D).imageSmoothingEnabled = false;
 
 c?.fillRect(0, 0, canvas.width, canvas.height);

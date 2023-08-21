@@ -1,6 +1,6 @@
-import { Fighter } from "../classes";
 import { Subscription } from "rxjs";
 import { rectangularCollision } from "../utils";
+import Fighter from "./Fighter";
 
 class Game {
   private gameOver = false;
