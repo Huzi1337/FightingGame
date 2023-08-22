@@ -14,12 +14,10 @@ c?.fillRect(0, 0, canvas.width, canvas.height);
 const background = new Sprite({ x: 0, y: 0 }, ["/bg.png"]);
 
 const mainTheme = new Audio("/music/theme1.mp3");
-mainTheme.muted = true;
-mainTheme.autoplay = true;
-mainTheme.loop = true;
 
 const toggleSoundMute = () => {
-  mainTheme.muted = !mainTheme.muted;
+  if (mainTheme.paused) mainTheme.play();
+  else mainTheme.pause();
 };
 
 const toggleSoundButton = document.querySelector("#sound") as HTMLButtonElement;
