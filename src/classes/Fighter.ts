@@ -46,6 +46,9 @@ class Fighter implements IFighterCollider, IFighterActions {
     this.attackBox = JSON.parse(
       JSON.stringify(character.attacks.attack1.attackBox)
     );
+    if (this.direction > 0)
+      this.character.attacks.attack1.attackBox.offset.x = this.width;
+    console.log(this.attackBox.offset.x);
     this.health = 100;
     this.image = new Image();
     this.image.src = (this.character.actions.idle as SpriteAnimation).imageSrc;
@@ -137,7 +140,7 @@ class Fighter implements IFighterCollider, IFighterActions {
     }
   }
 
-  stop() {
+  idle() {
     this.velocity.x = 0;
     this.setState("idle");
   }
@@ -152,13 +155,6 @@ class Fighter implements IFighterCollider, IFighterActions {
     if (!this._isAttacking) {
       this.setState("fall");
     }
-  }
-
-  idle() {
-    if (!this._isAttacking) {
-      this.setState("idle");
-    }
-    this.velocity.x = 0;
   }
 
   update() {
@@ -182,6 +178,10 @@ class Fighter implements IFighterCollider, IFighterActions {
       console.log(this.character.attacks[variant].attackBox.width);
       this.attackBox = {
         ...this.character.attacks[variant].attackBox,
+        offset: {
+          y: this.character.attacks[variant].attackBox.offset.y,
+          x: this.direction > 0 ? this.width : 0,
+        },
         width: this.character.attacks[variant].attackBox.width * this.direction,
         position: {
           x: this.position.x,
@@ -198,7 +198,7 @@ class Fighter implements IFighterCollider, IFighterActions {
       setTimeout(() => {
         console.log("stopped attacking");
         this._isAttacking = false;
-        this.stop();
+        this.idle();
       }, attackSpeed);
     }
   }
@@ -210,7 +210,7 @@ class Fighter implements IFighterCollider, IFighterActions {
 
   stopBlocking() {
     this._isBlocking = false;
-    this.stop();
+    this.idle();
   }
 
   get isBlocking(): boolean {

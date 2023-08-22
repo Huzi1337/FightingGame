@@ -69,12 +69,12 @@ export class PlayerControl {
       case this.keybinds.left:
         this.keyStatus.left.pressed = false;
         if (!this.keyStatus.left.pressed && !this.keyStatus.right.pressed)
-          this.player.stop();
+          this.player.idle();
         break;
       case this.keybinds.right:
         this.keyStatus.right.pressed = false;
         if (!this.keyStatus.left.pressed && !this.keyStatus.right.pressed)
-          this.player.stop();
+          this.player.idle();
         break;
       case this.keybinds.block:
         this.player.stopBlocking();
