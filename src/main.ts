@@ -15,7 +15,7 @@ const background = new Sprite({ x: 0, y: 0 }, ["/bg.png"]);
 
 const mainTheme = new Audio("/music/theme1.mp3");
 mainTheme.muted = true;
-mainTheme.play();
+mainTheme.autoplay = true;
 mainTheme.loop = true;
 
 const toggleSoundMute = () => {
