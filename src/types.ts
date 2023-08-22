@@ -15,6 +15,7 @@ export type FighterState =
   | "run"
   | "attack1"
   | "attack2"
+  | "block"
   | "fall";
 
 export type SpriteAnimations = Partial<Record<FighterState, SpriteAnimation>>;

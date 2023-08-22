@@ -41,6 +41,7 @@ class Fighter implements IFighterCollider, IFighterActions {
     public scale = 1,
     public animationSpeed = 1000
   ) {
+    this.character = JSON.parse(JSON.stringify(character));
     this.attackEvent = new Subject<IAttackEvent>();
     this.attackBox = JSON.parse(
       JSON.stringify(character.attacks.attack1.attackBox)
@@ -89,13 +90,14 @@ class Fighter implements IFighterCollider, IFighterActions {
       const animation = this.character.actions[this.state] as SpriteAnimation;
       const frameWidth = this.image.width / animation.maxFrames;
       const displayedFrame = this.currentFrame * frameWidth;
-
-      c.fillRect(
-        this.attackBox.position.x + this.attackBox.offset.x,
-        this.attackBox.position.y + this.attackBox.offset.y,
-        this.attackBox.width,
-        this.attackBox.height
-      );
+      if (this.isAttacking) {
+        c.fillRect(
+          this.attackBox.position.x + this.attackBox.offset.x,
+          this.attackBox.position.y + this.attackBox.offset.y,
+          this.attackBox.width,
+          this.attackBox.height
+        );
+      }
 
       c.fillStyle = "red";
       c.fillRect(this.position.x, this.position.y, this.width, this.height);
@@ -121,6 +123,7 @@ class Fighter implements IFighterCollider, IFighterActions {
   }
 
   run(direction: 1 | -1) {
+    if (this._isBlocking) this.stopBlocking();
     if (!this._isAttacking) {
       if (this.direction != direction) {
         this.direction = direction;
@@ -202,10 +205,12 @@ class Fighter implements IFighterCollider, IFighterActions {
 
   block() {
     this._isBlocking = true;
+    this.setState("block");
   }
 
   stopBlocking() {
     this._isBlocking = false;
+    this.stop();
   }
 
   get isBlocking(): boolean {
