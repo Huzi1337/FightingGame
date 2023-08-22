@@ -1,5 +1,6 @@
 import { king, rogue } from "./characters";
 import { Sprite } from "./classes";
+import AIControl from "./classes/AIControl";
 import Fighter from "./classes/Fighter";
 import Game from "./classes/Game";
 import { PlayerControl } from "./classes/PlayerControl";
@@ -74,6 +75,7 @@ const PLAYER2_KEYBINDS: Keybinds = {
 
 new PlayerControl(player, PLAYER1_KEYBINDS);
 new PlayerControl(enemy, PLAYER2_KEYBINDS);
+// const AI = new AIControl({ AIFighter: enemy, player });
 
 const verdict = document.querySelector("#verdict") as HTMLDivElement;
 const timer = document.querySelector(".timer") as HTMLDivElement;
@@ -92,5 +94,6 @@ const animate = () => {
   candle.update();
   player.update();
   enemy.update();
+  // AI.update();
 };
 animate();

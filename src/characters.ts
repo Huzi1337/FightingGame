@@ -48,7 +48,7 @@ export const rogue: Character = {
   },
   attacks: {
     attack1: {
-      damage: 20,
+      damage: 5,
       attackBox: {
         position: {
           x: 0,
