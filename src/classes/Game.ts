@@ -1,7 +1,7 @@
 import { Subscription } from "rxjs";
 import { rectangularCollision } from "../utils";
 import Fighter from "./Fighter";
-import { IAttackEvent, IWindUpEvent } from "../interfaces";
+import { IAttackEvent } from "../interfaces";
 
 class Game {
   private gameOver = false;
