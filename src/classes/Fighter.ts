@@ -194,7 +194,11 @@ class Fighter implements IFighterCollider, IFighterActions {
 
   staggered(duration: number) {
     this._isStaggered = true;
-    setTimeout(() => (this._isStaggered = false), duration);
+    this.setState({ state: "staggered", isLooping: false });
+    setTimeout(() => {
+      this._isStaggered = false;
+      this.idle();
+    }, duration);
     console.log(duration);
   }
 
@@ -237,6 +241,7 @@ class Fighter implements IFighterCollider, IFighterActions {
       setTimeout(() => {
         this.attackEvent.next({
           damage: this.character.attacks[variant].damage,
+          variant,
         });
 
         console.log("Attack is now lethal!");
@@ -272,7 +277,6 @@ class Fighter implements IFighterCollider, IFighterActions {
       this.position.y + this.height >= canvas.height - 55
     )
       this.idle();
-    console.log(this.position.y);
     if (this.position.y + this.height + this.velocity.y >= canvas.height - 55) {
       this.velocity.y = 0;
     } else {

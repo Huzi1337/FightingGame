@@ -60,7 +60,7 @@ export const rogue: Character = {
       speed: 50,
       lethalFrame: 5,
     },
-    attack2: { imageSrc: "/rogue/Attack3.png", maxFrames: 8, speed: 100 },
+    attack2: { imageSrc: "/rogue/Attack3.png", maxFrames: 8, speed: 140 },
 
     jump: { imageSrc: "/rogue/Jump.png", maxFrames: 3, speed: 100 },
     damaged: { imageSrc: "/rogue/Hit.png", maxFrames: 3, speed: 100 },

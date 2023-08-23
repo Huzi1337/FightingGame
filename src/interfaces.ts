@@ -12,6 +12,7 @@ export interface IFighterActions {
 
 export interface IAttackEvent {
   damage: number;
+  variant: AttackVariant;
 }
 
 export interface IFighterCollider {

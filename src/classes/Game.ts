@@ -31,13 +31,19 @@ class Game {
   resolvePlayerAttack(
     attacker: Fighter,
     defender: Fighter,
-    { damage }: IAttackEvent,
+    { damage, variant }: IAttackEvent,
     defenderHpbarId: string
   ) {
     if (rectangularCollision(attacker, defender)) {
       if (defender.isBlocking) {
-        defender.damaged(damage / 2);
-        attacker.pushedBack(defender.direction);
+        if (variant === "attack1") {
+          attacker.pushedBack(defender.direction);
+          attacker.staggered(1000);
+        } else if (variant === "attack2") {
+          defender.damaged(damage);
+          defender.stopBlocking();
+          defender.pushedBack(attacker.direction);
+        }
       } else {
         defender.pushedBack(attacker.direction);
         defender.damaged(damage);
