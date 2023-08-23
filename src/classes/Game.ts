@@ -15,15 +15,11 @@ class Game {
     private verdict: HTMLDivElement,
     private timerElement: HTMLDivElement
   ) {
-    this.resolvePlayer1Attack = this.resolvePlayer1Attack.bind(this);
-    this.resolvePlayer2Attack = this.resolvePlayer2Attack.bind(this);
+    this.player1Attack = this.player1Attack.bind(this);
+    this.player2Attack = this.player2Attack.bind(this);
 
-    this.player1subscription = player1.event$.subscribe(
-      this.resolvePlayer1Attack
-    );
-    this.player2subscription = player2.event$.subscribe(
-      this.resolvePlayer2Attack
-    );
+    this.player1subscription = player1.event$.subscribe(this.player1Attack);
+    this.player2subscription = player2.event$.subscribe(this.player2Attack);
     this.player1 = player1;
     this.player2 = player2;
   }
@@ -32,32 +28,34 @@ class Game {
     this.gameOver = true;
   }
 
-  resolvePlayer1Attack({ damage }: IAttackEvent) {
-    if (rectangularCollision(this.player1, this.player2)) {
-      if (this.player1.isBlocking) {
-        this.player2.damaged(damage / 2);
-      } else this.player2.damaged(damage);
+  resolvePlayerAttack(
+    attacker: Fighter,
+    defender: Fighter,
+    { damage }: IAttackEvent,
+    defenderHpbarId: string
+  ) {
+    if (rectangularCollision(attacker, defender)) {
+      if (defender.isBlocking) {
+        defender.damaged(damage / 2);
+        attacker.pushedBack(defender.direction);
+      } else {
+        defender.pushedBack(attacker.direction);
+        defender.damaged(damage);
+      }
       (
-        document.querySelector("#player2Health") as HTMLDivElement
-      ).style.width = `${this.player2.health}%`;
-      if (this.player2.health <= 0) this.endGame();
+        document.querySelector(`#${defenderHpbarId}`) as HTMLDivElement
+      ).style.width = `${defender.health}%`;
+      if (defender.health <= 0) this.endGame();
     }
-
-    console.log("Player 2 hp:", this.player2.health);
+    console.log(defenderHpbarId, defender.health);
   }
 
-  resolvePlayer2Attack({ damage }: IAttackEvent) {
-    if (rectangularCollision(this.player2, this.player1)) {
-      if (this.player1.isBlocking) {
-        this.player1.damaged(damage / 2);
-      } else this.player1.damaged(damage);
+  player1Attack(data: IAttackEvent) {
+    this.resolvePlayerAttack(this.player1, this.player2, data, "player2Health");
+  }
 
-      (
-        document.querySelector("#player1Health") as HTMLDivElement
-      ).style.width = `${this.player1.health}%`;
-      if (this.player1.health <= 0) this.endGame();
-    }
-    console.log("Player 1 hp:", this.player1.health);
+  player2Attack(data: IAttackEvent) {
+    this.resolvePlayerAttack(this.player2, this.player1, data, "player1Health");
   }
 
   decreaseTimer() {

@@ -1,6 +1,6 @@
 import { king, rogue } from "./characters";
 import { Sprite } from "./classes";
-import AIControl from "./classes/AIControl";
+// import AIControl from "./classes/AIControl";
 import Fighter from "./classes/Fighter";
 import Game from "./classes/Game";
 import { PlayerControl } from "./classes/PlayerControl";

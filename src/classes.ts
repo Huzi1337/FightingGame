@@ -1,13 +1,5 @@
 import { c } from "./data";
-import { AttackBox, Coordinates } from "./types";
-
-export interface IFighterCollider {
-  width: number;
-  height: number;
-  position: Coordinates;
-  attackBox: AttackBox;
-  getDirection(): number;
-}
+import { Coordinates } from "./types";
 
 export class Sprite {
   public height = 60;

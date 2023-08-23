@@ -16,7 +16,8 @@ export type FighterState =
   | "attack1"
   | "attack2"
   | "block"
-  | "fall";
+  | "fall"
+  | "damaged";
 
 export type SpriteAnimations = Partial<Record<FighterState, SpriteAnimation>>;
 
@@ -31,7 +32,7 @@ export type AttackBox = {
 };
 
 export type Character = {
-  actions: SpriteAnimations;
+  animations: SpriteAnimations;
   attacks: {
     attack1: Attack;
     attack2: Attack;
@@ -46,6 +47,12 @@ export type Attack = {
 export type SpriteAnimation = {
   imageSrc: string;
   maxFrames: number;
+  lethalFrame?: number;
 };
 
 export type AttackVariant = "attack1" | "attack2";
+
+export type StateParams = {
+  state: FighterState;
+  isLooping: boolean;
+};
