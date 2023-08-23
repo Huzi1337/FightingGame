@@ -15,6 +15,10 @@ export interface IAttackEvent {
   variant: AttackVariant;
 }
 
+export interface IWindUpEvent {
+  attackTimer: number;
+}
+
 export interface IFighterCollider {
   width: number;
   height: number;

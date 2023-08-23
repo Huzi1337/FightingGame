@@ -10,7 +10,12 @@ import {
   StateParams,
 } from "../types";
 
-import { IAttackEvent, IFighterActions, IFighterCollider } from "../interfaces";
+import {
+  IAttackEvent,
+  IFighterActions,
+  IFighterCollider,
+  IWindUpEvent,
+} from "../interfaces";
 
 class Fighter implements IFighterCollider, IFighterActions {
   private moveSpeed = 4;
@@ -29,7 +34,9 @@ class Fighter implements IFighterCollider, IFighterActions {
   private animationRef = 0;
   public currentFrame = 0;
   private state: FighterState = "idle";
-  private attackEvent;
+  private _attackEvent;
+  public attackTimer: number | null = null;
+  private _windUpEvent;
 
   private _isAttacking = false;
   private _isBlocking = false;
@@ -44,7 +51,8 @@ class Fighter implements IFighterCollider, IFighterActions {
     public scale = 1
   ) {
     this.character = JSON.parse(JSON.stringify(character));
-    this.attackEvent = new Subject<IAttackEvent>();
+    this._attackEvent = new Subject<IAttackEvent>();
+    this._windUpEvent = new Subject<IWindUpEvent>();
     this.attackBox = JSON.parse(
       JSON.stringify(character.attacks.attack1.attackBox)
     );
@@ -75,8 +83,12 @@ class Fighter implements IFighterCollider, IFighterActions {
     return this._isStaggered;
   }
 
-  get event$() {
-    return this.attackEvent.asObservable();
+  get attackEvent() {
+    return this._attackEvent.asObservable();
+  }
+
+  get windUpEvent() {
+    return this._windUpEvent.asObservable();
   }
 
   animate(isLooping: boolean) {
@@ -238,12 +250,12 @@ class Fighter implements IFighterCollider, IFighterActions {
           1) *
         (this.character.animations[this.state] as SpriteAnimation).speed;
       //attack lethal
-      setTimeout(() => {
-        this.attackEvent.next({
+      this.attackTimer = setTimeout(() => {
+        this._attackEvent.next({
           damage: this.character.attacks[variant].damage,
           variant,
         });
-
+        this.attackTimer = null;
         console.log("Attack is now lethal!");
       }, windUpSpeed);
 

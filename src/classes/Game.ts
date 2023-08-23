@@ -1,12 +1,13 @@
 import { Subscription } from "rxjs";
 import { rectangularCollision } from "../utils";
 import Fighter from "./Fighter";
-import { IAttackEvent } from "../interfaces";
+import { IAttackEvent, IWindUpEvent } from "../interfaces";
 
 class Game {
   private gameOver = false;
-  private player1subscription: Subscription;
-  private player2subscription: Subscription;
+
+  private player1AttackSubscription: Subscription;
+  private player2AttackSubscription: Subscription;
 
   constructor(
     private player1: Fighter,
@@ -15,11 +16,13 @@ class Game {
     private verdict: HTMLDivElement,
     private timerElement: HTMLDivElement
   ) {
-    this.player1Attack = this.player1Attack.bind(this);
-    this.player2Attack = this.player2Attack.bind(this);
+    this.player1AttackSubscription = player1.attackEvent.subscribe((data) =>
+      this.player1Attack(data)
+    );
+    this.player2AttackSubscription = player2.attackEvent.subscribe((data) =>
+      this.player2Attack(data)
+    );
 
-    this.player1subscription = player1.event$.subscribe(this.player1Attack);
-    this.player2subscription = player2.event$.subscribe(this.player2Attack);
     this.player1 = player1;
     this.player2 = player2;
   }
@@ -45,6 +48,10 @@ class Game {
           defender.pushedBack(attacker.direction);
         }
       } else {
+        if (defender.attackTimer) {
+          clearTimeout(defender.attackTimer);
+          defender.attackTimer = null;
+        }
         defender.pushedBack(attacker.direction);
         defender.damaged(damage);
       }
@@ -101,8 +108,8 @@ class Game {
   update() {}
 
   destroy() {
-    this.player1subscription.unsubscribe();
-    this.player2subscription.unsubscribe();
+    this.player1AttackSubscription.unsubscribe();
+    this.player2AttackSubscription.unsubscribe();
   }
 }
 
