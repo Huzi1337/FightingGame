@@ -47,6 +47,7 @@ export type Attack = {
 export type SpriteAnimation = {
   imageSrc: string;
   maxFrames: number;
+  speed: number;
   lethalFrame?: number;
 };
 

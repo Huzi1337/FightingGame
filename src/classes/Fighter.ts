@@ -58,22 +58,27 @@ class Fighter implements IFighterCollider, IFighterActions {
 
     this.animate(true);
   }
-  setState({ state, isLooping }: StateParams) {
-    if (this.state != state) {
-      this.state = state;
-      this.image.src = (
-        this.character.animations[state] as SpriteAnimation
-      ).imageSrc;
-      clearTimeout(this.animationRef);
-      this.currentFrame = 0;
-      this.animate(isLooping);
-    }
+
+  get isBlocking(): boolean {
+    return this._isBlocking;
+  }
+
+  get isAttacking(): boolean {
+    return this._isAttacking;
+  }
+
+  get direction(): -1 | 1 {
+    return this._direction;
+  }
+
+  get event$() {
+    return this.attackEvent.asObservable();
   }
 
   animate(isLooping: boolean) {
     this.animationRef = setTimeout(
       () => this.animate(isLooping),
-      this.animationSpeed
+      (this.character.animations[this.state] as SpriteAnimation).speed
     );
     if (
       this.currentFrame <
@@ -126,6 +131,18 @@ class Fighter implements IFighterCollider, IFighterActions {
     }
   }
 
+  setState({ state, isLooping }: StateParams) {
+    if (this.state != state) {
+      this.state = state;
+      this.image.src = (
+        this.character.animations[state] as SpriteAnimation
+      ).imageSrc;
+      clearTimeout(this.animationRef);
+      this.currentFrame = 0;
+      this.animate(isLooping);
+    }
+  }
+
   run(direction: 1 | -1) {
     if (this._isBlocking) this.stopBlocking();
     if (!this._isAttacking) {
@@ -163,7 +180,7 @@ class Fighter implements IFighterCollider, IFighterActions {
 
   damaged(damage: number) {
     this.health -= damage;
-    this.setState({ state: "damaged", isLooping: true });
+    this.setState({ state: "damaged", isLooping: false });
   }
 
   staggered(duration: number) {
@@ -174,20 +191,6 @@ class Fighter implements IFighterCollider, IFighterActions {
     this.velocity.x = 10 * direction;
     this.velocity.y = -3;
     setTimeout(() => (this.velocity.x = 0), 200);
-  }
-
-  update() {
-    this.draw();
-    this.position.y += this.velocity.y;
-    this.position.x += this.velocity.x;
-    this.attackBox.position.x = this.position.x;
-    this.attackBox.position.y = this.position.y;
-
-    if (this.position.y + this.height + this.velocity.y >= canvas.height - 55) {
-      this.velocity.y = 0;
-    } else {
-      this.velocity.y += GRAVITY;
-    }
   }
 
   attack(variant: AttackVariant) {
@@ -214,13 +217,13 @@ class Fighter implements IFighterCollider, IFighterActions {
 
       const attackSpeed =
         (this.character.animations[variant] as SpriteAnimation).maxFrames *
-        this.animationSpeed;
+        (this.character.animations[this.state] as SpriteAnimation).speed;
 
       const windUpSpeed =
         (((this.character.animations[variant] as SpriteAnimation)
           .lethalFrame as number) -
           1) *
-        this.animationSpeed;
+        (this.character.animations[this.state] as SpriteAnimation).speed;
       //attack lethal
       setTimeout(() => {
         this.attackEvent.next({
@@ -249,20 +252,23 @@ class Fighter implements IFighterCollider, IFighterActions {
     this.idle();
   }
 
-  get isBlocking(): boolean {
-    return this._isBlocking;
-  }
-
-  get isAttacking(): boolean {
-    return this._isAttacking;
-  }
-
-  get direction(): -1 | 1 {
-    return this._direction;
-  }
-
-  get event$() {
-    return this.attackEvent.asObservable();
+  update() {
+    this.draw();
+    this.position.y += this.velocity.y;
+    this.position.x += this.velocity.x;
+    this.attackBox.position.x = this.position.x;
+    this.attackBox.position.y = this.position.y;
+    if (
+      this.state === "jump" &&
+      this.position.y + this.height >= canvas.height - 55
+    )
+      this.idle();
+    console.log(this.position.y);
+    if (this.position.y + this.height + this.velocity.y >= canvas.height - 55) {
+      this.velocity.y = 0;
+    } else {
+      this.velocity.y += GRAVITY;
+    }
   }
 }
 

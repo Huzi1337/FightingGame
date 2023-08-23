@@ -2,13 +2,23 @@ import { Character } from "./types";
 
 export const king: Character = {
   animations: {
-    idle: { imageSrc: "/king/Idle.png", maxFrames: 6 },
-    run: { imageSrc: "/king/Run.png", maxFrames: 8 },
-    attack1: { imageSrc: "/king/Attack_1.png", maxFrames: 6, lethalFrame: 4 },
-    attack2: { imageSrc: "/king/Attack_2.png", maxFrames: 6, lethalFrame: 4 },
-    block: { imageSrc: "/king/Block.png", maxFrames: 1 },
-    jump: { imageSrc: "/king/Jump.png", maxFrames: 2 },
-    damaged: { imageSrc: "/king/Hit.png", maxFrames: 4 },
+    idle: { imageSrc: "/king/Idle.png", maxFrames: 6, speed: 100 },
+    run: { imageSrc: "/king/Run.png", maxFrames: 8, speed: 100 },
+    attack1: {
+      imageSrc: "/king/Attack_1.png",
+      maxFrames: 6,
+      lethalFrame: 4,
+      speed: 100,
+    },
+    attack2: {
+      imageSrc: "/king/Attack_2.png",
+      maxFrames: 6,
+      lethalFrame: 4,
+      speed: 200,
+    },
+    block: { imageSrc: "/king/Block.png", maxFrames: 1, speed: 100 },
+    jump: { imageSrc: "/king/Jump.png", maxFrames: 2, speed: 100 },
+    damaged: { imageSrc: "/king/Hit.png", maxFrames: 4, speed: 100 },
   },
   attacks: {
     attack1: {
@@ -40,13 +50,13 @@ export const king: Character = {
 
 export const rogue: Character = {
   animations: {
-    idle: { imageSrc: "/rogue/Idle.png", maxFrames: 10 },
-    run: { imageSrc: "/rogue/Run.png", maxFrames: 8 },
-    attack1: { imageSrc: "/rogue/Attack1.png", maxFrames: 7 },
-    attack2: { imageSrc: "/rogue/Attack2.png", maxFrames: 7 },
+    idle: { imageSrc: "/rogue/Idle.png", maxFrames: 10, speed: 120 },
+    run: { imageSrc: "/rogue/Run.png", maxFrames: 8, speed: 100 },
+    attack1: { imageSrc: "/rogue/Attack1.png", maxFrames: 7, speed: 50 },
+    attack2: { imageSrc: "/rogue/Attack2.png", maxFrames: 7, speed: 100 },
 
-    jump: { imageSrc: "/rogue/Jump.png", maxFrames: 3 },
-    damaged: { imageSrc: "/rogue/Hit.png", maxFrames: 3 },
+    jump: { imageSrc: "/rogue/Jump.png", maxFrames: 3, speed: 100 },
+    damaged: { imageSrc: "/rogue/Hit.png", maxFrames: 3, speed: 100 },
   },
   attacks: {
     attack1: {
