@@ -39,47 +39,49 @@ export class PlayerControl {
   }
 
   readKeyDownInput(key: string) {
-    switch (key) {
-      case this.keybinds.left:
-        this.keyStatus.left.pressed = true;
-        this.player.run(-1);
-        break;
-      case this.keybinds.right:
-        this.keyStatus.right.pressed = true;
-        this.player.run(1);
-        break;
-      case this.keybinds.jump:
-        this.player.jump();
-        break;
-      case this.keybinds.attack1:
-        this.player.attack("attack1");
-        break;
-      case this.keybinds.attack2:
-        this.player.attack("attack2");
+    if (!this.player.isStaggered)
+      switch (key) {
+        case this.keybinds.left:
+          this.keyStatus.left.pressed = true;
+          this.player.run(-1);
+          break;
+        case this.keybinds.right:
+          this.keyStatus.right.pressed = true;
+          this.player.run(1);
+          break;
+        case this.keybinds.jump:
+          this.player.jump();
+          break;
+        case this.keybinds.attack1:
+          this.player.attack("attack1");
+          break;
+        case this.keybinds.attack2:
+          this.player.attack("attack2");
 
-        break;
-      case this.keybinds.block:
-        this.player.block();
-        break;
-    }
+          break;
+        case this.keybinds.block:
+          this.player.block();
+          break;
+      }
   }
 
   readKeyUpInput(key: string) {
-    switch (key) {
-      case this.keybinds.left:
-        this.keyStatus.left.pressed = false;
-        if (!this.keyStatus.left.pressed && !this.keyStatus.right.pressed)
-          this.player.idle();
-        break;
-      case this.keybinds.right:
-        this.keyStatus.right.pressed = false;
-        if (!this.keyStatus.left.pressed && !this.keyStatus.right.pressed)
-          this.player.idle();
-        break;
-      case this.keybinds.block:
-        this.player.stopBlocking();
-        break;
-    }
+    if (!this.player.isStaggered)
+      switch (key) {
+        case this.keybinds.left:
+          this.keyStatus.left.pressed = false;
+          if (!this.keyStatus.left.pressed && !this.keyStatus.right.pressed)
+            this.player.idle();
+          break;
+        case this.keybinds.right:
+          this.keyStatus.right.pressed = false;
+          if (!this.keyStatus.left.pressed && !this.keyStatus.right.pressed)
+            this.player.idle();
+          break;
+        case this.keybinds.block:
+          this.player.stopBlocking();
+          break;
+      }
   }
 
   update() {}

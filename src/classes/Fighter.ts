@@ -33,6 +33,7 @@ class Fighter implements IFighterCollider, IFighterActions {
 
   private _isAttacking = false;
   private _isBlocking = false;
+  private _isStaggered = false;
 
   constructor(
     public position: Coordinates,
@@ -40,8 +41,7 @@ class Fighter implements IFighterCollider, IFighterActions {
     public offset: Coordinates,
     public character: Character,
 
-    public scale = 1,
-    public animationSpeed = 1000
+    public scale = 1
   ) {
     this.character = JSON.parse(JSON.stringify(character));
     this.attackEvent = new Subject<IAttackEvent>();
@@ -69,6 +69,10 @@ class Fighter implements IFighterCollider, IFighterActions {
 
   get direction(): -1 | 1 {
     return this._direction;
+  }
+
+  get isStaggered() {
+    return this._isStaggered;
   }
 
   get event$() {
@@ -183,7 +187,14 @@ class Fighter implements IFighterCollider, IFighterActions {
     this.setState({ state: "damaged", isLooping: false });
   }
 
+  die() {
+    this.setState({ state: "death", isLooping: false });
+    this._isStaggered = true;
+  }
+
   staggered(duration: number) {
+    this._isStaggered = true;
+    setTimeout(() => (this._isStaggered = false), duration);
     console.log(duration);
   }
 
@@ -195,10 +206,8 @@ class Fighter implements IFighterCollider, IFighterActions {
 
   attack(variant: AttackVariant) {
     if (this._isAttacking === false) {
-      console.log(this.direction);
       this._isAttacking = true;
       this.setState({ state: variant, isLooping: false });
-      console.log(this.character.attacks[variant].attackBox.width);
       this.attackBox = {
         ...this.character.attacks[variant].attackBox,
         offset: {

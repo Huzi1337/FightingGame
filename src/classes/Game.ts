@@ -45,7 +45,10 @@ class Game {
       (
         document.querySelector(`#${defenderHpbarId}`) as HTMLDivElement
       ).style.width = `${defender.health}%`;
-      if (defender.health <= 0) this.endGame();
+      if (defender.health <= 0) {
+        defender.die();
+        this.endGame();
+      }
     }
     console.log(defenderHpbarId, defender.health);
   }

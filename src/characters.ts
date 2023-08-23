@@ -19,6 +19,8 @@ export const king: Character = {
     block: { imageSrc: "/king/Block.png", maxFrames: 1, speed: 100 },
     jump: { imageSrc: "/king/Jump.png", maxFrames: 2, speed: 100 },
     damaged: { imageSrc: "/king/Hit.png", maxFrames: 4, speed: 100 },
+    staggered: { imageSrc: "/king/Stagger.png", maxFrames: 1, speed: 100 },
+    death: { imageSrc: "/king/Death.png", maxFrames: 11, speed: 100 },
   },
   attacks: {
     attack1: {
@@ -52,11 +54,19 @@ export const rogue: Character = {
   animations: {
     idle: { imageSrc: "/rogue/Idle.png", maxFrames: 10, speed: 120 },
     run: { imageSrc: "/rogue/Run.png", maxFrames: 8, speed: 100 },
-    attack1: { imageSrc: "/rogue/Attack1.png", maxFrames: 7, speed: 50 },
-    attack2: { imageSrc: "/rogue/Attack2.png", maxFrames: 7, speed: 100 },
+    attack1: {
+      imageSrc: "/rogue/Attack1.png",
+      maxFrames: 7,
+      speed: 50,
+      lethalFrame: 5,
+    },
+    attack2: { imageSrc: "/rogue/Attack3.png", maxFrames: 8, speed: 100 },
 
     jump: { imageSrc: "/rogue/Jump.png", maxFrames: 3, speed: 100 },
     damaged: { imageSrc: "/rogue/Hit.png", maxFrames: 3, speed: 100 },
+    block: { imageSrc: "/rogue/Block.png", maxFrames: 1, speed: 100 },
+    staggered: { imageSrc: "/rogue/Stagger.png", maxFrames: 1, speed: 100 },
+    death: { imageSrc: "/rogue/Death.png", maxFrames: 7, speed: 100 },
   },
   attacks: {
     attack1: {

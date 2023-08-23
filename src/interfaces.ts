@@ -7,6 +7,7 @@ export interface IFighterActions {
   attack(variant: AttackVariant): void;
   block(): void;
   stopBlocking(): void;
+  isStaggered: boolean;
 }
 
 export interface IAttackEvent {

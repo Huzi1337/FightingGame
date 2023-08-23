@@ -32,8 +32,7 @@ const player = new Fighter(
     y: 85,
   },
   king,
-  2,
-  100
+  2
 );
 
 const enemy = new Fighter(
@@ -44,8 +43,7 @@ const enemy = new Fighter(
     y: 205,
   },
   rogue,
-  3.5,
-  100
+  3.5
 );
 
 const candle = new Sprite(
