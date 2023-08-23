@@ -1,4 +1,4 @@
-import { IFighterCollider } from "./classes";
+import { IFighterCollider } from "./interfaces";
 
 export const rectangularCollision = (
   rectangle1: IFighterCollider,
