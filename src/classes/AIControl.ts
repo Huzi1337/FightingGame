@@ -28,8 +28,10 @@ class AIControl {
   }
 
   update() {
-    this.attack();
-    this.moveTowardsPlayer();
+    if (!this.AIFighter.isStaggered) {
+      this.attack();
+      this.moveTowardsPlayer();
+    }
   }
 }
 

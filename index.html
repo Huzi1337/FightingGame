@@ -8,6 +8,11 @@
   </head>
   <body>
     <main>
+      <div id="menu" class="menuContainer">
+        <button id="btn_pvp">Player vs Player</button>
+        <button id="btn_pvAI">Player vs AI</button>
+      </div>
+
       <div class="topUI">
         <div class="healthBar__container">
           <div id="player1Health" class="healthBar"></div>
@@ -17,7 +22,10 @@
           <div id="player2Health" class="healthBar"></div>
         </div>
       </div>
-      <div id="verdict" class="center__text"></div>
+      <div id="verdict" class="center__text">
+        <button>Back to menu</button>
+        <button>Restart</button>
+      </div>
       <canvas id="app"></canvas>
     </main>
     <div id="options">

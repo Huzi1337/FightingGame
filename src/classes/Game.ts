@@ -89,10 +89,10 @@ class Game {
   determineWinner() {
     this.verdict.style.display = "flex";
     if (this.player1.health === this.player2.health)
-      this.verdict.innerHTML = "draw";
+      this.verdict.textContent = "draw";
     else if (this.player1.health > this.player2.health)
-      this.verdict.innerHTML = "Player 1 wins";
-    else this.verdict.innerHTML = "Player 2 wins";
+      this.verdict.textContent = "Player 1 wins";
+    else this.verdict.textContent = "Player 2 wins";
   }
 
   getGameOver() {

@@ -91,6 +91,16 @@ class Fighter implements IFighterCollider, IFighterActions {
     return this._windUpEvent.asObservable();
   }
 
+  preloadAssets() {
+    for (let animation in this.character.animations) {
+      const image = new Image();
+      image.src = (
+        this.character.animations[animation as FighterState] as SpriteAnimation
+      ).imageSrc;
+      image.onload = () => console.log(`${animation} loaded`);
+    }
+  }
+
   animate(isLooping: boolean) {
     this.animationRef = setTimeout(
       () => this.animate(isLooping),

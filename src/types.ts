@@ -1,3 +1,6 @@
+import AIControl from "./classes/AIControl";
+import { PlayerControl } from "./classes/PlayerControl";
+
 export type Keybinds = {
   left: string;
   right: string;
@@ -58,4 +61,9 @@ export type AttackVariant = "attack1" | "attack2";
 export type StateParams = {
   state: FighterState;
   isLooping: boolean;
+};
+
+export type ControlObject = {
+  player1: PlayerControl;
+  player2: PlayerControl | AIControl | null;
 };
