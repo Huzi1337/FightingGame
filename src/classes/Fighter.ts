@@ -63,7 +63,7 @@ class Fighter implements IFighterCollider, IFighterActions {
     this.image.src = (
       this.character.animations.idle as SpriteAnimation
     ).imageSrc;
-
+    this.preloadAssets();
     this.animate(true);
   }
 
