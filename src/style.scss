@@ -74,6 +74,7 @@ canvas {
 
 .center__text {
   position: absolute;
+  flex-direction: column;
   display: none;
   top: 0;
   bottom: 0;

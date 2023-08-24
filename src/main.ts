@@ -71,18 +71,32 @@ const PLAYER2_KEYBINDS: Keybinds = {
   block: "Numpad0",
 };
 
+const verdict = document.querySelector("#verdict") as HTMLDivElement;
+const timer = document.querySelector(".timer") as HTMLDivElement;
+
+const game = new Game(player, enemy, 60, verdict, timer);
+
 const menuButtons = {
   pvp: document.querySelector("#btn_pvp") as HTMLButtonElement,
   pvAI: document.querySelector("#btn_pvAI") as HTMLButtonElement,
+  restart: document.querySelector("#btn_restart") as HTMLButtonElement,
+  mainMenu: document.querySelector("#btn_mainMenu") as HTMLButtonElement,
 };
 
 const menuContainer = document.querySelector("#menu") as HTMLDivElement;
 
 menuButtons.pvp.addEventListener("click", () => {
   startGame("player");
+  game.startGame();
 });
 menuButtons.pvAI.addEventListener("click", () => {
   startGame("AI");
+  game.startGame();
+});
+
+menuButtons.restart.addEventListener("click", () => {
+  game.reset();
+  verdict.style.display = "none";
 });
 
 const toggleMenu = () => {
@@ -99,13 +113,6 @@ const startGame = (versus: "AI" | "player") => {
     controlObject.player2 = new PlayerControl(enemy, PLAYER2_KEYBINDS);
   if (versus === "AI")
     controlObject.player2 = new AIControl({ AIFighter: enemy, player });
-
-  const verdict = document.querySelector("#verdict") as HTMLDivElement;
-  const timer = document.querySelector(".timer") as HTMLDivElement;
-
-  const game = new Game(player, enemy, 60, verdict, timer);
-
-  game.decreaseTimer();
 
   const animate = () => {
     window.requestAnimationFrame(animate);

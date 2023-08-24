@@ -4,7 +4,7 @@ import Fighter from "./Fighter";
 import { IAttackEvent } from "../interfaces";
 
 class Game {
-  private gameOver = false;
+  private gameOver = true;
 
   private player1AttackSubscription: Subscription;
   private player2AttackSubscription: Subscription;
@@ -22,13 +22,10 @@ class Game {
     this.player2AttackSubscription = player2.attackEvent.subscribe((data) =>
       this.player2Attack(data)
     );
-
+    console.log(this.timer);
+    console.log(this.timerElement);
     this.player1 = player1;
     this.player2 = player2;
-  }
-
-  reset() {
-    this.gameOver = true;
   }
 
   resolvePlayerAttack(
@@ -55,6 +52,7 @@ class Game {
         defender.pushedBack(attacker.direction);
         defender.damaged(damage);
       }
+
       (
         document.querySelector(`#${defenderHpbarId}`) as HTMLDivElement
       ).style.width = `${defender.health}%`;
@@ -63,6 +61,9 @@ class Game {
         this.endGame();
       }
     }
+    console.log(
+      document.querySelector(`#${defenderHpbarId}`) as HTMLDivElement
+    );
     console.log(defenderHpbarId, defender.health);
   }
 
@@ -75,6 +76,7 @@ class Game {
   }
 
   decreaseTimer() {
+    console.log("timer decreased", this.timer);
     if (this.timer > 0 && !this.gameOver) {
       setTimeout(this.decreaseTimer.bind(this), 1000);
       this.timer--;
@@ -89,10 +91,14 @@ class Game {
   determineWinner() {
     this.verdict.style.display = "flex";
     if (this.player1.health === this.player2.health)
-      this.verdict.textContent = "draw";
+      (this.verdict.querySelector("h1") as HTMLHeadingElement).textContent =
+        "draw";
     else if (this.player1.health > this.player2.health)
-      this.verdict.textContent = "Player 1 wins";
-    else this.verdict.textContent = "Player 2 wins";
+      (this.verdict.querySelector("h1") as HTMLHeadingElement).textContent =
+        "Player 1 wins";
+    else
+      (this.verdict.querySelector("h1") as HTMLHeadingElement).textContent =
+        "Player 2 wins";
   }
 
   getGameOver() {
@@ -103,6 +109,30 @@ class Game {
     this.player2.velocity.x = 0;
     this.gameOver = true;
     this.determineWinner();
+  }
+
+  reset() {
+    this.resetPlayer(this.player1, 10, "player1Health");
+    this.resetPlayer(this.player2, 1000, "player2Health");
+    this.timer = 60;
+    this.startGame();
+  }
+
+  resetPlayer(fighter: Fighter, initialXPos: number, hpbarId: string) {
+    fighter.position.x = initialXPos;
+    fighter.clearStaggered();
+    fighter.idle();
+    fighter.health = 100;
+    console.log(hpbarId);
+    console.log(document.querySelector(`#${hpbarId}`));
+    (
+      document.querySelector(`#${hpbarId}`) as HTMLDivElement
+    ).style.width = `${fighter.health}%`;
+  }
+
+  startGame() {
+    this.gameOver = false;
+    this.decreaseTimer();
   }
 
   update() {}

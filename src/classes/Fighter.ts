@@ -205,7 +205,8 @@ class Fighter implements IFighterCollider, IFighterActions {
   }
 
   damaged(damage: number) {
-    this.health -= damage;
+    if (this.health < damage) this.health = 0;
+    else this.health -= damage;
     this.setState({ state: "damaged", isLooping: false });
   }
 
@@ -222,6 +223,10 @@ class Fighter implements IFighterCollider, IFighterActions {
       this.idle();
     }, duration);
     console.log(duration);
+  }
+
+  clearStaggered() {
+    this._isStaggered = false;
   }
 
   pushedBack(direction: 1 | -1) {

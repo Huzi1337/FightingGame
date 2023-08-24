@@ -24,7 +24,7 @@ export const king: Character = {
   },
   attacks: {
     attack1: {
-      damage: 20,
+      damage: 70,
       attackBox: {
         position: {
           x: 0,
