@@ -1,12 +1,10 @@
 import { king, rogue } from "./characters";
 import { Sprite } from "./classes";
-import AIControl from "./classes/AIControl";
 import Fighter from "./classes/Fighter";
 import Game from "./classes/Game";
-import { PlayerControl } from "./classes/PlayerControl";
+import Menu from "./classes/Menu";
 import { c, canvas } from "./data";
 import "./style.scss";
-import { ControlObject, Keybinds } from "./types";
 
 (c as CanvasRenderingContext2D).imageSmoothingEnabled = false;
 
@@ -53,79 +51,9 @@ const candle = new Sprite(
   200
 );
 
-const PLAYER1_KEYBINDS: Keybinds = {
-  left: "KeyA",
-  right: "KeyD",
-  jump: "KeyW",
-  attack1: "Space",
-  attack2: "ShiftLeft",
-  block: "Semicolon",
-};
-
-const PLAYER2_KEYBINDS: Keybinds = {
-  left: "ArrowLeft",
-  right: "ArrowRight",
-  jump: "ArrowUp",
-  attack1: "ArrowDown",
-  attack2: "ControlRight",
-  block: "Numpad0",
-};
-
 const verdict = document.querySelector("#verdict") as HTMLDivElement;
 const timer = document.querySelector(".timer") as HTMLDivElement;
 
-const game = new Game(player, enemy, 60, verdict, timer);
+const game = new Game(player, enemy, 60, verdict, timer, [background, candle]);
 
-const menuButtons = {
-  pvp: document.querySelector("#btn_pvp") as HTMLButtonElement,
-  pvAI: document.querySelector("#btn_pvAI") as HTMLButtonElement,
-  restart: document.querySelector("#btn_restart") as HTMLButtonElement,
-  mainMenu: document.querySelector("#btn_mainMenu") as HTMLButtonElement,
-};
-
-const menuContainer = document.querySelector("#menu") as HTMLDivElement;
-
-menuButtons.pvp.addEventListener("click", () => {
-  startGame("player");
-  game.startGame();
-});
-menuButtons.pvAI.addEventListener("click", () => {
-  startGame("AI");
-  game.startGame();
-});
-
-menuButtons.restart.addEventListener("click", () => {
-  game.reset();
-  verdict.style.display = "none";
-});
-
-const toggleMenu = () => {
-  menuContainer.classList.toggle("hide");
-};
-
-const startGame = (versus: "AI" | "player") => {
-  toggleMenu();
-  const controlObject: ControlObject = {
-    player1: new PlayerControl(player, PLAYER1_KEYBINDS),
-    player2: null,
-  };
-  if (versus === "player")
-    controlObject.player2 = new PlayerControl(enemy, PLAYER2_KEYBINDS);
-  if (versus === "AI")
-    controlObject.player2 = new AIControl({ AIFighter: enemy, player });
-
-  const animate = () => {
-    window.requestAnimationFrame(animate);
-    if (c != null) {
-      c.fillStyle = "black";
-      c.fillRect(0, 0, canvas.width, canvas.height);
-    }
-    background.update();
-    candle.update();
-    player.update();
-    enemy.update();
-    if (controlObject.player2 instanceof AIControl)
-      controlObject.player2.update();
-  };
-  animate();
-};
+new Menu(game);

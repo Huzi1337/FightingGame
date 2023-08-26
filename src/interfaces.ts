@@ -26,3 +26,10 @@ export interface IFighterCollider {
   attackBox: AttackBox;
   direction: 1 | -1;
 }
+
+export interface IGameNavigation {
+  startGame(action: "pvAI" | "pvp"): void;
+  stopPlaying(): void;
+  reset(): void;
+  startRound(): void;
+}

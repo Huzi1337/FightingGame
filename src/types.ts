@@ -1,4 +1,5 @@
 import AIControl from "./classes/AIControl";
+import Fighter from "./classes/Fighter";
 import { PlayerControl } from "./classes/PlayerControl";
 
 export type Keybinds = {
@@ -66,4 +67,12 @@ export type StateParams = {
 export type ControlObject = {
   player1: PlayerControl;
   player2: PlayerControl | AIControl | null;
+};
+
+export type GameParameters = {
+  player1: Fighter;
+  player2: Fighter;
+  timer: number;
+  verdictElement: HTMLDivElement;
+  timerElement: HTMLDivElement;
 };

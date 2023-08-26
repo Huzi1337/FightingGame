@@ -2,19 +2,26 @@ import { Subscription } from "rxjs";
 import { rectangularCollision } from "../utils";
 import Fighter from "./Fighter";
 import { IAttackEvent } from "../interfaces";
+import { PlayerControl } from "./PlayerControl";
+import AIControl from "./AIControl";
+import { PLAYER1_KEYBINDS, PLAYER2_KEYBINDS, c, canvas } from "../data";
+import { Sprite } from "../classes";
 
 class Game {
   private gameOver = true;
-
+  private animationLoop: number | null = null;
   private player1AttackSubscription: Subscription;
   private player2AttackSubscription: Subscription;
+  private player1Controls: PlayerControl | null = null;
+  private player2Controls: PlayerControl | AIControl | null = null;
 
   constructor(
     private player1: Fighter,
     private player2: Fighter,
     private timer: number,
-    private verdict: HTMLDivElement,
-    private timerElement: HTMLDivElement
+    private verdictElement: HTMLDivElement,
+    private timerElement: HTMLDivElement,
+    private environment: Sprite[]
   ) {
     this.player1AttackSubscription = player1.attackEvent.subscribe((data) =>
       this.player1Attack(data)
@@ -89,16 +96,19 @@ class Game {
   }
 
   determineWinner() {
-    this.verdict.style.display = "flex";
+    this.verdictElement.style.display = "flex";
     if (this.player1.health === this.player2.health)
-      (this.verdict.querySelector("h1") as HTMLHeadingElement).textContent =
-        "draw";
+      (
+        this.verdictElement.querySelector("h1") as HTMLHeadingElement
+      ).textContent = "draw";
     else if (this.player1.health > this.player2.health)
-      (this.verdict.querySelector("h1") as HTMLHeadingElement).textContent =
-        "Player 1 wins";
+      (
+        this.verdictElement.querySelector("h1") as HTMLHeadingElement
+      ).textContent = "Player 1 wins";
     else
-      (this.verdict.querySelector("h1") as HTMLHeadingElement).textContent =
-        "Player 2 wins";
+      (
+        this.verdictElement.querySelector("h1") as HTMLHeadingElement
+      ).textContent = "Player 2 wins";
   }
 
   getGameOver() {
@@ -112,10 +122,10 @@ class Game {
   }
 
   reset() {
+    this.verdictElement.style.display = "none";
     this.resetPlayer(this.player1, 10, "player1Health");
     this.resetPlayer(this.player2, 1000, "player2Health");
     this.timer = 60;
-    this.startGame();
   }
 
   resetPlayer(fighter: Fighter, initialXPos: number, hpbarId: string) {
@@ -130,9 +140,46 @@ class Game {
     ).style.width = `${fighter.health}%`;
   }
 
-  startGame() {
+  startRound() {
     this.gameOver = false;
     this.decreaseTimer();
+  }
+
+  startGame(mode: "pvAI" | "pvp") {
+    this.player1Controls = new PlayerControl(this.player1, PLAYER1_KEYBINDS);
+    this.player2Controls =
+      mode === "pvp"
+        ? new PlayerControl(this.player2, PLAYER2_KEYBINDS)
+        : new AIControl({ player: this.player1, AIFighter: this.player2 });
+
+    const animate = () => {
+      this.animationLoop = window.requestAnimationFrame(animate);
+      if (c != null) {
+        c.fillStyle = "black";
+        c.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      this.environment.forEach((sprite) => sprite.update());
+
+      this.player1.update();
+      this.player2.update();
+      if (this.player2Controls instanceof AIControl)
+        this.player2Controls.update();
+    };
+    animate();
+  }
+
+  stopPlaying() {
+    if (this.animationLoop && c) {
+      c.fillStyle = "black";
+      c.fillRect(0, 0, canvas.width, canvas.height);
+      window.cancelAnimationFrame(this.animationLoop);
+    }
+    this.reset();
+    this.player1Controls?.destroy();
+    this.player1Controls = null;
+    if (this.player2Controls instanceof PlayerControl)
+      this.player2Controls.destroy();
+    this.player2Controls = null;
   }
 
   update() {}
