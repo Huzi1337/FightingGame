@@ -280,7 +280,7 @@ class Fighter implements IFighterCollider, IFighterActions {
       setTimeout(() => {
         console.log("stopped attacking");
         this._isAttacking = false;
-        this.idle();
+        if (this.state != "death") this.idle();
       }, attackSpeed + this.recovery);
     }
   }

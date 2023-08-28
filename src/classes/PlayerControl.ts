@@ -1,4 +1,4 @@
-import { IFighterActions } from "../interfaces";
+import { IFighter } from "../interfaces";
 import { Keybinds } from "../types";
 
 export class PlayerControl {
@@ -20,7 +20,7 @@ export class PlayerControl {
     },
   };
 
-  constructor(private player: IFighterActions, private keybinds: Keybinds) {
+  constructor(private player: IFighter, private keybinds: Keybinds) {
     window.addEventListener("keydown", (event) =>
       this.readKeyDownInput(event.code)
     );
@@ -70,12 +70,20 @@ export class PlayerControl {
       switch (key) {
         case this.keybinds.left:
           this.keyStatus.left.pressed = false;
-          if (!this.keyStatus.left.pressed && !this.keyStatus.right.pressed)
+          if (
+            !this.keyStatus.left.pressed &&
+            !this.keyStatus.right.pressed &&
+            !this.player.isAttacking
+          )
             this.player.idle();
           break;
         case this.keybinds.right:
           this.keyStatus.right.pressed = false;
-          if (!this.keyStatus.left.pressed && !this.keyStatus.right.pressed)
+          if (
+            !this.keyStatus.left.pressed &&
+            !this.keyStatus.right.pressed &&
+            !this.player.isAttacking
+          )
             this.player.idle();
           break;
         case this.keybinds.block:

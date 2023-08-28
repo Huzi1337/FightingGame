@@ -7,8 +7,15 @@ export interface IFighterActions {
   attack(variant: AttackVariant): void;
   block(): void;
   stopBlocking(): void;
-  isStaggered: boolean;
 }
+
+export interface IFighterProperties {
+  isStaggered: boolean;
+  isAttacking: boolean;
+  isBlocking: boolean;
+}
+
+export interface IFighter extends IFighterActions, IFighterProperties {}
 
 export interface IAttackEvent {
   damage: number;

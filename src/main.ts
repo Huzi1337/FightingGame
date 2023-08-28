@@ -23,7 +23,7 @@ toggleSoundButton.addEventListener("click", toggleSoundMute);
 const background = new Sprite({ x: 0, y: 0 }, ["/bg.png"]);
 
 const player = new Fighter(
-  { x: 0, y: 0 },
+  { x: 0, y: canvas.height - 205 },
   { x: 0, y: 0 },
   {
     x: 90,
@@ -34,7 +34,7 @@ const player = new Fighter(
 );
 
 const enemy = new Fighter(
-  { x: 1000, y: 0 },
+  { x: 1000, y: canvas.height - 205 },
   { x: 0, y: 0 },
   {
     x: 240,
