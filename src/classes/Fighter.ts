@@ -182,7 +182,9 @@ class Fighter implements IFighterCollider, IFighterActions {
       if (this.velocity.y === 0)
         this.setState({ state: "run", isLooping: true });
 
-      this.velocity.x = this.moveSpeed * direction;
+      const futurePos = this.position.x + this.moveSpeed * direction;
+      if (futurePos > 0 || futurePos + this.width < canvas.width)
+        this.velocity.x = this.moveSpeed * direction;
     }
   }
 
@@ -295,8 +297,13 @@ class Fighter implements IFighterCollider, IFighterActions {
 
   update() {
     this.draw();
+    if (
+      this.position.x + this.velocity.x > 0 &&
+      this.position.x + this.velocity.x + this.width < canvas.width
+    ) {
+      this.position.x += this.velocity.x;
+    }
     this.position.y += this.velocity.y;
-    this.position.x += this.velocity.x;
     this.attackBox.position.x = this.position.x;
     this.attackBox.position.y = this.position.y;
     if (
