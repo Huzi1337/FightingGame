@@ -12,6 +12,8 @@ c?.fillRect(0, 0, canvas.width, canvas.height);
 
 const mainTheme = new Audio("/music/theme1.mp3");
 
+mainTheme.volume = 0.1;
+
 const toggleSoundMute = () => {
   if (mainTheme.paused) mainTheme.play();
   else mainTheme.pause();
@@ -20,7 +22,7 @@ const toggleSoundMute = () => {
 const toggleSoundButton = document.querySelector("#sound") as HTMLButtonElement;
 toggleSoundButton.addEventListener("click", toggleSoundMute);
 
-const background = new Sprite({ x: 0, y: 0 }, ["/bg.png"]);
+const background = new Sprite({ x: 0, y: 0 }, ["/background/bg.png"]);
 
 const player = new Fighter(
   { x: 0, y: canvas.height - 205 },
@@ -46,7 +48,7 @@ const enemy = new Fighter(
 
 const candle = new Sprite(
   { x: canvas.width - 50, y: canvas.height - 100 },
-  Array.from({ length: 6 }, (_, i) => `/candle_1_${i + 1}.png`),
+  Array.from({ length: 6 }, (_, i) => `/background/candle_1_${i + 1}.png`),
   2,
   200
 );
