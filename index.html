@@ -4,11 +4,12 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <title>Fighting Game</title>
     <meta http-equiv="Cache-Control" content="max-age=3600" />
   </head>
   <body>
     <main>
+      <div id="controlsInfo"></div>
       <div id="menu" class="menuContainer">
         <button id="btn_pvp" data-action="pvp">Player vs Player</button>
         <button id="btn_pvAI" data-action="pvAI">Player vs AI</button>
@@ -31,7 +32,8 @@
       <canvas id="app"></canvas>
     </main>
     <div id="options">
-      <button id="sound">Toggle sound</button>
+      <button id="sound"></button>
+      <button id="controlsBtn"></button>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

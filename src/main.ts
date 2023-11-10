@@ -4,6 +4,7 @@ import Fighter from "./classes/Fighter";
 import Game from "./classes/Game";
 import Menu from "./classes/Menu";
 import { c, canvas } from "./data";
+import { PLAYER1_KEYBINDS, PLAYER2_KEYBINDS } from "./data";
 import "./style.scss";
 
 (c as CanvasRenderingContext2D).imageSmoothingEnabled = false;
@@ -14,13 +15,36 @@ const mainTheme = new Audio("/music/theme1.mp3");
 
 mainTheme.volume = 0.1;
 
+const soundBtn = document.querySelector("#sound");
+const controlsInfo = document.querySelector("#controlsInfo");
+
+(controlsInfo as HTMLDivElement).innerHTML = (() => {
+  let controls = "Player 1: <br>";
+  Object.entries(PLAYER1_KEYBINDS).forEach(
+    (value) => (controls += `${value[0]}: ${value[1]} <br>`)
+  );
+  controls += "<br>Player 2: <br>";
+  Object.entries(PLAYER2_KEYBINDS).forEach(
+    (value) => (controls += `${value[0]}: ${value[1]} <br>`)
+  );
+  return controls;
+})();
+
 const toggleSoundMute = () => {
   if (mainTheme.paused) mainTheme.play();
   else mainTheme.pause();
+  soundBtn?.classList.toggle("on");
 };
 
-const toggleSoundButton = document.querySelector("#sound") as HTMLButtonElement;
-toggleSoundButton.addEventListener("click", toggleSoundMute);
+const toggleControls = () => {
+  controlsInfo?.classList.toggle("on");
+};
+
+soundBtn?.addEventListener("click", toggleSoundMute);
+
+document
+  .querySelector("#controlsBtn")
+  ?.addEventListener("click", toggleControls);
 
 const background = new Sprite({ x: 0, y: 0 }, ["/background/bg.png"]);
 

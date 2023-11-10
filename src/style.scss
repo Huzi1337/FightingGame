@@ -103,3 +103,43 @@ main {
   width: 1280px;
   height: 720px;
 }
+
+#options {
+  display: flex;
+  justify-content: center;
+  padding: 1em;
+  gap: 1em;
+}
+
+#sound,
+#controlsBtn {
+  width: 24px;
+  height: 24px;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+#sound {
+  background-image: url(icons/volume_off.png);
+}
+
+#sound.on {
+  background-image: url(icons/volume_up.png);
+}
+
+#controlsBtn {
+  background-image: url(icons/help_outline.png);
+}
+
+#controlsInfo {
+  display: none;
+  position: absolute;
+  padding: 1em;
+  bottom: 0;
+  opacity: 0.8;
+  background-color: black;
+}
+
+#controlsInfo.on {
+  display: block;
+}
