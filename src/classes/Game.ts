@@ -166,6 +166,8 @@ class Game {
         this.player2Controls.update();
     };
     animate();
+
+    this.startRound();
   }
 
   stopPlaying() {
