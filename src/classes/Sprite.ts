@@ -1,5 +1,5 @@
-import { c } from "./data";
-import { Coordinates } from "./types";
+import { c } from "../data";
+import { Coordinates } from "../types";
 
 export class Sprite {
   public height = 60;

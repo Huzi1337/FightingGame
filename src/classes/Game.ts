@@ -5,7 +5,7 @@ import { IAttackEvent } from "../interfaces";
 import { PlayerControl } from "./PlayerControl";
 import AIControl from "./AIControl";
 import { PLAYER1_KEYBINDS, PLAYER2_KEYBINDS, c, canvas } from "../data";
-import { Sprite } from "../classes";
+import { Sprite } from "./Sprite";
 
 class Game {
   private gameOver = true;

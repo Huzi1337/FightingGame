@@ -1,5 +1,5 @@
 import { king, rogue } from "./characters";
-import { Sprite } from "./classes";
+import { Sprite } from "./classes/Sprite";
 import Fighter from "./classes/Fighter";
 import Game from "./classes/Game";
 import Menu from "./classes/Menu";
