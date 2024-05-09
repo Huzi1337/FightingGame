@@ -16,6 +16,9 @@
 main {
   position: relative;
 }
+body {
+  overflow-y: hidden;
+}
 
 .menuContainer {
   position: absolute;

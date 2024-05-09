@@ -37,7 +37,7 @@ class Fighter implements IFighterCollider, IFighterActions {
   private _attackEvent;
   public attackTimer: number | null = null;
   private _windUpEvent;
-
+  private debugMode = false;
   private _isAttacking = false;
   private _isBlocking = false;
   private _isStaggered = false;
@@ -125,7 +125,8 @@ class Fighter implements IFighterCollider, IFighterActions {
       ] as SpriteAnimation;
       const frameWidth = this.image.width / animation.maxFrames;
       const displayedFrame = this.currentFrame * frameWidth;
-      if (this.isAttacking) {
+      c.fillStyle = "red";
+      if (this.isAttacking && this.debugMode) {
         c.fillRect(
           this.attackBox.position.x + this.attackBox.offset.x,
           this.attackBox.position.y + this.attackBox.offset.y,
@@ -134,8 +135,9 @@ class Fighter implements IFighterCollider, IFighterActions {
         );
       }
 
-      c.fillStyle = "red";
-      c.fillRect(this.position.x, this.position.y, this.width, this.height);
+      if (this.debugMode) {
+        c.fillRect(this.position.x, this.position.y, this.width, this.height);
+      }
 
       c.save();
       c.scale(this._direction, 1);

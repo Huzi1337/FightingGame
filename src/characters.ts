@@ -24,7 +24,7 @@ export const king: Character = {
   },
   attacks: {
     attack1: {
-      damage: 70,
+      damage: 10,
       attackBox: {
         position: {
           x: 0,
@@ -36,7 +36,7 @@ export const king: Character = {
       },
     },
     attack2: {
-      damage: 10,
+      damage: 20,
       attackBox: {
         position: {
           x: 0,
@@ -75,7 +75,7 @@ export const rogue: Character = {
   },
   attacks: {
     attack1: {
-      damage: 5,
+      damage: 10,
       attackBox: {
         position: {
           x: 0,
@@ -87,7 +87,7 @@ export const rogue: Character = {
       },
     },
     attack2: {
-      damage: 10,
+      damage: 20,
       attackBox: {
         position: {
           x: 0,
